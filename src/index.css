@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-text-size-adjust: 100%;
+  @apply font-medium text-blue antialiased font;
+}
+
+@layer components {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  button,
+  input[type='submit'],
+  label {
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-5xl lg:leading-relaxed;
+  }
+
+  h2 {
+    @apply text-2xl lg:text-4xl lg:leading-relaxed;
+  }
+
+  input,
+  select {
+    @apply px-2 py-1 rounded-md border border-solid border-black relative appearance-none;
+  }
+
+  select {
+    background-image: url('/img/DropIcon.svg');
+    background-position: calc(100% - 0.5rem) calc(100% - 0.25ch);
+    background-size: 1.5rem 1.5rem;
+    background-repeat: no-repeat;
+  }
+
+  select.dark {
+    background-image: url('/img/DropIconDark.svg');
+  }
+
+  option {
+    @apply border;
+  }
+
+  button,
+  input[type='submit'],
+  .button {
+    @apply bg-primary text-white rounded-lg text-base
+    px-5 py-3 cursor-pointer border-none font-bold;
+  }
+
+  input[type='checkbox']:checked {
+    @apply bg-primary border-none;
+  }
+
+  a {
+    @apply text-primary;
+  }
+}
+
+.carousel .control-dots .dot {
+  @apply !bg-white outline outline-[.5px] outline-primary !opacity-100 !shadow-none;
+}
+
+.carousel .control-dots .dot.selected {
+  @apply !bg-primary outline outline-[.5px] outline-white !opacity-100 !shadow-none z-10;
+}
