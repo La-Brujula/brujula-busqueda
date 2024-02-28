@@ -15,7 +15,7 @@ export const NameSearchField = () => {
       action="/buscar"
       method="get"
       onSubmit={handleSubmit((values) => {
-        navigate({ to: '/buscar', search: { name: values.search } });
+        navigate({ to: '/', search: { name: values.search } });
       })}
       className="grid grid-cols-[1fr_min-content] lg:grid-cols-[1fr_min-content]
       gap-4 justify-items-stretch flex-grow w-full
