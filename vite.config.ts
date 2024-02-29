@@ -9,7 +9,7 @@ export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {
     plugins: [react(), TanStackRouterVite()],
-    base: env.BASE_URL,
+    base: '',
     resolve: {
       alias: {
         '@assets': path.resolve(
