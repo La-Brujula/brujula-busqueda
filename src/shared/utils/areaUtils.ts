@@ -69,7 +69,6 @@ export function getSubAreaObjectByName(
   area: keyof typeof areas,
   subareaName: string
 ) {
-  // @ts-expect-error
   return areas[area][subareaName];
 }
 

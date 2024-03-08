@@ -10,29 +10,44 @@
 
 // Import Routes
 
-import { Route as rootRoute } from './routes/__root'
-import { Route as IndexImport } from './routes/index'
+import { Route as rootRoute } from './routes/__root';
+import { Route as IndexImport } from './routes/index';
+import { Route as ProfileUserIdImport } from './routes/profile/$userId';
 
 // Create/Update Routes
 
 const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route));
+
+const ProfileUserIdRoute = ProfileUserIdImport.update({
+  path: '/profile/$userId',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/profile/$userId.lazy').then((d) => d.Route)
+);
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      preLoaderRoute: typeof IndexImport
-      parentRoute: typeof rootRoute
-    }
+      preLoaderRoute: typeof IndexImport;
+      parentRoute: typeof rootRoute;
+    };
+    '/profile/$userId': {
+      preLoaderRoute: typeof ProfileUserIdImport;
+      parentRoute: typeof rootRoute;
+    };
   }
 }
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren([IndexRoute])
+export const routeTree = rootRoute.addChildren([
+  IndexRoute,
+  ProfileUserIdRoute,
+]);
 
 /* prettier-ignore-end */

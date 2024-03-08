@@ -3,14 +3,16 @@ import {
   useNavigate,
   useSearch,
 } from '@tanstack/react-router';
-import { useProfileSearch } from '../modules/search/hooks/useSearch';
 import { useCallback, useEffect, useMemo } from 'react';
 import useDebounce from '@/shared/hooks/useDebounce';
-import { ResultsFilter } from '@/modules/search/components/resultsFilters';
-import { UsersList } from '@/modules/search/components/userList';
+import { ResultsFilter } from '../modules/search/components/resultsFilters';
+import { UsersList } from '../modules/search/components/userList';
 import { LoadingSpinner } from '@/shared/components/loadingSpinner';
 import ReactVisibilitySensor from 'react-visibility-sensor';
 import ErrorMessage from '@/shared/components/errorMessage';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { searchQueryOptions } from '@/modules/search/queries/searchQuery';
+import { useTranslation } from 'react-i18next';
 
 export const Route = createLazyFileRoute('/')({
   component: SearchHomepage,
@@ -21,13 +23,15 @@ function SearchHomepage() {
     from: '/',
   });
 
+  const queryOptions = useMemo(() => searchQueryOptions(search), [search]);
+
   const {
     data: results,
     isLoading: loading,
     error,
     fetchNextPage,
     hasNextPage,
-  } = useProfileSearch(search);
+  } = useInfiniteQuery(queryOptions);
 
   const users = useMemo(
     () =>
@@ -41,6 +45,8 @@ function SearchHomepage() {
 
   const navigate = useNavigate();
 
+  const { t } = useTranslation('search');
+
   const updateSearchParams = useCallback(
     (fieldName: string) => (value: any) =>
       navigate({
@@ -53,7 +59,6 @@ function SearchHomepage() {
   );
 
   useEffect(() => {
-    if (!query) return;
     updateSearchParams('query')(query);
   }, [query]);
 
@@ -83,7 +88,11 @@ function SearchHomepage() {
             className="border-none bg-transparent focus:outline-none w-full"
           />
         </div>
-        <p>{results?.pages[0].meta?.total || '...'} resultados</p>
+        <p>
+          {t('{{count}} resultado', {
+            count: results?.pages[0].meta?.total || 0,
+          })}
+        </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[20rem_1fr] gap-12 mt-16">
         <ResultsFilter filters={search} />
@@ -98,7 +107,7 @@ function SearchHomepage() {
           {!!users && users.length > 0 ? (
             <UsersList users={users} />
           ) : (
-            !loading && !error && <p>No se encontraron resultados</p>
+            !loading && !error && <p>{t('No se encontraron resultados')}</p>
           )}
           {loading && <LoadingSpinner />}
           {!loading && hasNextPage && (

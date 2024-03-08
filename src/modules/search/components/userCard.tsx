@@ -1,9 +1,14 @@
 import { getTitle } from '@shared/utils/areaUtils';
-import { UserDTO } from '../hooks/useSearch';
+import { useTranslation } from 'react-i18next';
+import { UserDTO } from '../queries/searchQuery';
+import { Link } from '@tanstack/react-router';
 
 export const UserCard = ({ user }: { user: UserDTO }) => {
+  const { t } = useTranslation('search');
   return (
-    <div
+    <Link
+      to="/profile/$userId"
+      params={{ userId: user.id }}
       className="grid grid-cols-[5rem_1fr_1fr] lg:grid-cols-[5rem_5fr_4fr] lg:gap-4
       gap-4 pt-4 gap-y-4 items-center"
     >
@@ -64,7 +69,7 @@ export const UserCard = ({ user }: { user: UserDTO }) => {
             {user.recommendationsCount || 0}
           </span>
           <span className="text-xs leading-3 block">
-            Brujula(s) de recomendación
+            {t('Brujula(s) de recomendación')}
           </span>
         </p>
       </div>
@@ -73,6 +78,6 @@ export const UserCard = ({ user }: { user: UserDTO }) => {
           {user.headline}
         </p>
       )}
-    </div>
+    </Link>
   );
 };

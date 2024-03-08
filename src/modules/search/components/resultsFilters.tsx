@@ -14,11 +14,7 @@ export const ResultsFilter = ({ filters }: { filters: Search }) => {
   const [moreFiltersVisible, setMoreFiltersVisible] = useState(false);
 
   const clearFilters = useCallback(() => {
-    const emptyFilters = {} as Search;
-    Object.keys(filters).forEach((key) => {
-      emptyFilters[key as keyof Search] = undefined;
-    });
-    navigate({ search: emptyFilters });
+    navigate({ search: {} });
   }, []);
 
   const updateFilterValue = useCallback(
