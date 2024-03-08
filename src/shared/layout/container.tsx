@@ -46,7 +46,6 @@ export const Container = (props: {
         'flex',
         'flex-col',
         'justify-center',
-        'mt-24',
         className,
       ].join(' ')}
     >

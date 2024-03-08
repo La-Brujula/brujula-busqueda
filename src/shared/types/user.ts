@@ -1,3 +1,4 @@
+import { UserDTO } from '@/modules/search/queries/searchQuery';
 import { EnumGender } from './genders';
 import { lang, proficiency } from './languages';
 
@@ -49,6 +50,57 @@ export interface IFirebaseProfile {
   location?: string;
   altPhone2?: string;
   reviewCount?: number;
+}
+
+export interface IBackendProfile {
+  birthday?: string;
+  workRadius?: string;
+  youtube?: string;
+  whatsapp?: string;
+  country?: string;
+  gender?: EnumGender;
+  city?: string;
+  university?: string;
+  postalCode?: string;
+  coverPictureUrl?: string;
+  created?: boolean;
+  linkedin?: string;
+  instagram?: string;
+  type: 'fisica' | 'moral';
+  twitter?: string;
+  imdb?: string;
+  reviews?: string;
+  tiktok?: string;
+  secondaryEmails?: string[];
+  nickname?: string;
+  state?: string;
+  headline?: string;
+  primaryEmail: string;
+  profilePictureUrl?: string;
+  subareas?: string[];
+  characteristics?: string;
+  website?: string;
+  address?: string;
+  languages?: { lang: lang; proficiency: proficiency }[];
+  remoteWork?: boolean;
+  facebook?: string;
+  googleMapsLink?: string;
+  certifications?: string;
+  lastName?: string;
+  asociations?: string;
+  profilePicture?: string;
+  vimeo?: string;
+  phoneNumbers?: string[];
+  awards?: string;
+  probono?: boolean;
+  firstName?: string;
+  fullName?: string;
+  location?: string;
+  recommendationsCount?: number;
+  recommendations?: UserDTO[];
+  primaryActivity?: string;
+  secondaryActivity?: string;
+  thirdActivity?: string;
 }
 
 export interface IFirebaseProfileUpdate {
