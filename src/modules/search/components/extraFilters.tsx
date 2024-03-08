@@ -28,6 +28,7 @@ export function ExtraFilters({
             id="remote"
             onChange={updateFilterValue('remote')}
             className="size-4 cursor-pointer"
+            defaultChecked={filters.remote}
           />
         </div>
         <select
@@ -102,6 +103,7 @@ export function ExtraFilters({
           id="socialService"
           onChange={updateFilterValue('socialService')}
           className="size-4 cursor-pointer"
+          defaultChecked={filters.socialService}
         />
       </div>
       {/* Asociaciones */}
