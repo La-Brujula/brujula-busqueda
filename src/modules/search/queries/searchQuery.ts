@@ -22,22 +22,24 @@ export type UserDTO = {
 export const searchQueryOptions = (search: Search) =>
   infiniteQueryOptions({
     initialPageParam: 0,
-    maxPages: 50,
     queryKey: ['search', search],
     queryFn: (queryParams) =>
       getFetch<UserDTO[]>('/profiles', {
         params: { ...search, offset: queryParams.pageParam },
+        signal: queryParams.signal,
       }),
     getPreviousPageParam: (firstPage) => {
       const next = firstPage.meta.offset - firstPage.meta.limit;
-      if (next >= 0) {
-        return next;
+      if (next <= 0) {
+        return null;
       }
+      return next;
     },
     getNextPageParam: (lastPage) => {
       const next = lastPage.meta.offset + lastPage.meta.limit;
-      if (next < lastPage.meta.total) {
-        return next;
+      if (next >= lastPage.meta.total) {
+        return null;
       }
+      return next;
     },
   });
