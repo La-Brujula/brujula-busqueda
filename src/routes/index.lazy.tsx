@@ -13,6 +13,10 @@ import ErrorMessage from '@/shared/components/errorMessage';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchQueryOptions } from '@/modules/search/queries/searchQuery';
 import { useTranslation } from 'react-i18next';
+import { Search } from '@/modules/search/types/searchParams';
+import { useForm } from 'react-hook-form';
+import { Input } from '@/shared/components/input';
+import { SearchOutlined } from '@mui/icons-material';
 
 export const Route = createLazyFileRoute('/')({
   component: SearchHomepage,
@@ -41,26 +45,26 @@ function SearchHomepage() {
     [results]
   );
 
-  let [query, setQuery] = useDebounce(search.query, 500);
-
   const navigate = useNavigate();
 
-  const { t } = useTranslation('search');
+  const { register, watch, handleSubmit, reset } = useForm<Search>({
+    defaultValues: {},
+  });
 
-  const updateSearchParams = useCallback(
-    (fieldName: string) => (value: any) =>
-      navigate({
-        search: {
-          ...search,
-          [fieldName]: value,
-        },
-      }),
-    [navigate]
-  );
+  const onSubmit = (data: Search) =>
+    navigate({
+      search: Object.fromEntries(
+        Object.entries(data).filter(([_, value]) => !!value)
+      ),
+      replace: true,
+    });
 
   useEffect(() => {
-    updateSearchParams('query')(query);
-  }, [query]);
+    const subscription = watch(() => handleSubmit(onSubmit)());
+    return () => subscription.unsubscribe();
+  }, [handleSubmit, watch]);
+
+  const { t } = useTranslation('search');
 
   return (
     <>
@@ -74,18 +78,16 @@ function SearchHomepage() {
         text-white placeholder:text-white flex flex-row gap-1
         justify-start items-center px-2 mx-auto rounded-md
         z-10 w-full"
-          style={{
-            backgroundColor: 'rgb(45 123 191 / var(--tw-bg-opacity))',
-            border: '2px solid #dfe1e5',
-            borderColor: 'rgb(237 237 237 / var(--tw-border-opacity))',
-            flexGrow: '1',
-          }}
         >
-          <input
+          <SearchOutlined />
+          <Input
             type="text"
-            defaultValue={query}
-            onChange={(ev) => setQuery(ev.currentTarget.value)}
-            className="border-none bg-transparent focus:outline-none w-full"
+            register={register}
+            fieldName="query"
+            label="query"
+            labelClass="hidden"
+            divClass="w-full"
+            inputClass="border-none bg-transparent focus:outline-none"
           />
         </div>
         <p>
@@ -95,7 +97,11 @@ function SearchHomepage() {
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-[20rem_1fr] gap-12 mt-16">
-        <ResultsFilter filters={search} />
+        <ResultsFilter
+          filters={search}
+          register={register}
+          reset={reset}
+        />
         <div
           className="flex flex-col gap-8 text-left bg-black bg-opacity-20
           rounded-l-3xl p-8 w-full relative"

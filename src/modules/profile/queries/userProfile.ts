@@ -22,8 +22,8 @@ export type UserDTO = {
 export const profileQueryOptions = (profileId: string) =>
   queryOptions({
     queryKey: ['profiles', profileId],
-    queryFn: () =>
-      getFetch<IBackendProfile>(`/profiles/${profileId}`).then(
-        (res) => res.entity
-      ),
+    queryFn: (queryOptions) =>
+      getFetch<IBackendProfile>(`/profiles/${profileId}`, {
+        signal: queryOptions.signal,
+      }).then((res) => res.entity),
   });
