@@ -3,11 +3,14 @@
   "seeOur": "See our",
   "privacy": "privacy policy",
   "trademark": "La Brújula is a registered trademark.",
+  "login": "TODO",
   "search": "Search",
   "aboutUs": "About us",
   "home": "Home",
+  "createUser": "TODO",
   "myUser": "My user",
   "La Brújula en PDF": "TODO",
   "privacyH": "Aviso legal y de privacidad",
-  "contact": "Contact"
+  "contact": "Contact",
+  "logout": "TODO"
 }

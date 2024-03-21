@@ -1,5 +1,5 @@
 import React, { HTMLInputTypeAttribute, ReactNode, useMemo } from 'react';
-import { RegisterOptions } from 'react-hook-form';
+import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
 
 type InputProps<
   Type extends
@@ -8,10 +8,11 @@ type InputProps<
     | 'groupedSelect'
     | 'custom'
     | HTMLInputTypeAttribute,
+  FormFields extends FieldValues,
 > = {
   label: string;
-  register: (fieldName: string, options?: RegisterOptions) => any;
-  fieldName: string;
+  register: UseFormRegister<FormFields>;
+  fieldName: Path<FormFields>;
   inputClass?: string;
   divClass?: string;
   labelClass?: string;
@@ -34,7 +35,11 @@ type InputProps<
       : Type extends 'custom'
         ? {
             type: 'custom';
-            component: React.JSX.Element;
+            component: React.FunctionComponent<{
+              register: UseFormRegister<FormFields>;
+              fieldName: Path<FormFields>;
+            }>;
+            [k: string]: any;
           }
         : Type extends HTMLInputTypeAttribute
           ? {
@@ -46,7 +51,18 @@ type InputProps<
             >
           : {});
 
-function buildGroupedSelect(props: InputProps<'groupedSelect'>) {
+const internalProps = [
+  'label',
+  'register',
+  'fieldName',
+  'inputClass',
+  'divClass',
+  'labelClass',
+  'required',
+];
+function buildGroupedSelect<T extends FieldValues>(
+  props: InputProps<'groupedSelect', T>
+) {
   return (
     <select
       {...props.register(props.fieldName, { required: props.required })}
@@ -57,6 +73,7 @@ function buildGroupedSelect(props: InputProps<'groupedSelect'>) {
       <option
         value=""
         unselectable="on"
+        selected
       >
         {props.label}
       </option>
@@ -79,7 +96,7 @@ function buildGroupedSelect(props: InputProps<'groupedSelect'>) {
   );
 }
 
-function buildSelect(props: InputProps<'select'>) {
+function buildSelect<T extends FieldValues>(props: InputProps<'select', T>) {
   return (
     <select
       {...props.register(props.fieldName, { required: props.required })}
@@ -89,7 +106,6 @@ function buildSelect(props: InputProps<'select'>) {
     >
       <option
         value=""
-        selected
         unselectable="on"
       >
         {props.label}
@@ -106,7 +122,9 @@ function buildSelect(props: InputProps<'select'>) {
   );
 }
 
-function buildTextArea(props: InputProps<'textArea'>) {
+function buildTextArea<T extends FieldValues>(
+  props: InputProps<'textArea', T>
+) {
   return (
     <textarea
       {...props.register(props.fieldName, { required: props.required })}
@@ -118,44 +136,49 @@ function buildTextArea(props: InputProps<'textArea'>) {
   );
 }
 
-function buildInput(props: InputProps<HTMLInputTypeAttribute>) {
+function buildInput<T extends FieldValues>(
+  props: InputProps<HTMLInputTypeAttribute, T>
+) {
   return (
     <input
       className={props.inputClass}
-      type={props.type}
-      {...props.register(props.fieldName, { required: props.required })}
+      {...Object.fromEntries(
+        Object.entries(props).filter(([k, v]) => !internalProps.includes(k))
+      )}
       id={props.fieldName}
-      autoComplete={props.autoComplete}
-      placeholder={props.placeholder}
+      {...props.register(props.fieldName, { required: props.required })}
     />
   );
 }
 
-export function Input(
+function Input<T extends FieldValues>(
   props:
-    | InputProps<'textArea'>
-    | InputProps<'select'>
-    | InputProps<'groupedSelect'>
-    | InputProps<'custom'>
-    | InputProps<HTMLInputTypeAttribute>
+    | InputProps<'textArea', T>
+    | InputProps<'select', T>
+    | InputProps<'groupedSelect', T>
+    | InputProps<'custom', T>
+    | InputProps<HTMLInputTypeAttribute, T>
 ) {
   const inputElement: ReactNode = useMemo(() => {
     switch (props.type) {
       case 'textArea':
-        return buildTextArea(props as InputProps<'textArea'>);
+        return buildTextArea(props as InputProps<'textArea', T>);
       case 'select':
-        return buildSelect(props as InputProps<'select'>);
+        return buildSelect(props as InputProps<'select', T>);
       case 'groupedSelect':
-        return buildGroupedSelect(props as InputProps<'groupedSelect'>);
+        return buildGroupedSelect(props as InputProps<'groupedSelect', T>);
       case 'custom':
-        return (props as InputProps<'custom'>).component;
+        const CustomElement = (props as InputProps<'custom', T>).component;
+        return <CustomElement {...props} />;
       default:
         return buildInput(props);
     }
   }, [props]);
 
   return (
-    <div className={['flex flex-col gap-2', props.divClass].join(' ')}>
+    <div
+      className={['flex flex-col gap-2 text-left', props.divClass].join(' ')}
+    >
       <label
         htmlFor={props.fieldName}
         className={props.labelClass}
@@ -167,3 +190,5 @@ export function Input(
     </div>
   );
 }
+
+export default Input;

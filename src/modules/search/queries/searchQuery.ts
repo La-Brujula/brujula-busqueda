@@ -25,7 +25,11 @@ export const searchQueryOptions = (search: Search) =>
     queryKey: ['search', search],
     queryFn: (queryParams) =>
       getFetch<UserDTO[]>('/profiles', {
-        params: { ...search, offset: queryParams.pageParam },
+        params: {
+          ...search,
+          activity: search.activity || search.category,
+          offset: queryParams.pageParam,
+        },
         signal: queryParams.signal,
       }),
     getPreviousPageParam: (firstPage) => {

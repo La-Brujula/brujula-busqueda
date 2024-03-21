@@ -1,15 +1,15 @@
 import languages from '@shared/constants/languages.json';
 import { Search } from '../types/searchParams';
 import { useTranslation } from 'react-i18next';
-import { Input } from '@/shared/components/input';
-import { RegisterOptions } from 'react-hook-form';
+import Input from '@/shared/components/input';
+import { UseFormRegister } from 'react-hook-form';
 
 export function ExtraFilters({
   filters,
   register,
 }: {
   filters: Search;
-  register: (fieldName: keyof Search, options: RegisterOptions) => any;
+  register: UseFormRegister<Search>;
 }) {
   const { t } = useTranslation('search');
   return (
@@ -70,7 +70,7 @@ export function ExtraFilters({
         divClass="grid gap-1 items-center text-left border-b border-b-black border-opacity-20"
       />
       <Input
-        label={t('Disponible para sevicio social o de becario')}
+        label={t('Disponible para servicio social o de becario')}
         fieldName="socialService"
         register={register}
         type="checkbox"

@@ -1,7 +1,10 @@
+import { SearchOutlined } from '@mui/icons-material';
 import { useNavigate } from '@tanstack/react-router';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 
 export const NameSearchField = () => {
+  const { t } = useTranslation('landing');
   const { register, handleSubmit } = useForm({
     defaultValues: {
       search: '',
@@ -38,13 +41,13 @@ export const NameSearchField = () => {
           color: 'rgb(237 237 237 / var(--tw-text-opacity))',
           zIndex: 1,
         }}
-        placeholder={'searchByName'}
+        placeholder={t('searchByName')}
       />
       <button
         type="submit"
         className="text-black bg-white p-4 size-16 rounded-full"
       >
-        Buscar
+        <SearchOutlined />
       </button>
     </form>
   );

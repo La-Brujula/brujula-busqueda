@@ -2,11 +2,13 @@ import PersonOutline from '@mui/icons-material/PersonOutline';
 import { Link } from '@tanstack/react-router';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '../providers/authProvider';
+
 export const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useTranslation('navigation');
 
-  // const { isLoggedIn } = useAuth();
+  const { isLoggedIn, account } = useAuth(['isLoggedIn', 'account']);
 
   const toggleOpen = () => {
     return setIsOpen(!isOpen);
@@ -29,29 +31,30 @@ export const Navbar = () => {
           />
         </Link>
         <div className="hidden md:flex grow flex-row gap-8 justify-end mr-8">
-          {/* {!isLoggedIn ? (
+          {!isLoggedIn ? (
             <Link
-              to="/iniciar-sesion"
+              to="/auth/login"
               className="font-bold text-white"
             >
               {t('login')}
             </Link>
-          ) : ( */}
+          ) : (
+            <Link
+              to="/profile/$userId"
+              params={{ userId: account.ProfileId }}
+              className="text-white order-last"
+            >
+              <PersonOutline />
+            </Link>
+          )}
           <Link
-            to="/"
-            className="text-white order-last"
-          >
-            <PersonOutline />
-          </Link>
-          {/* )} */}
-          <Link
-            to="/"
+            to="/search"
             className="font-bold text-white"
           >
             {t('search')}
           </Link>
           <Link
-            to="/"
+            to="/about"
             className="font-bold text-white"
           >
             {t('aboutUs')}
@@ -96,49 +99,50 @@ export const Navbar = () => {
             >
               {t('home')}
             </Link>
-            {/* {!isLoggedIn ? ( */}
-            {/* <>
+            {!isLoggedIn ? (
+              <>
                 <Link
                   onClick={() => toggleOpen()}
-                  to="/iniciar-sesion"
+                  to="/auth/login"
                   className="font-bold leading-relaxed text-white"
                 >
                   {t('login')}
                 </Link>
                 <Link
                   onClick={() => toggleOpen()}
-                  to="/crear-usuario"
+                  to="/auth/signup"
                   className="font-bold leading-relaxed text-white"
                 >
                   {t('createUser')}
                 </Link>
               </>
-            ) : ( */}
+            ) : (
+              <Link
+                onClick={() => toggleOpen()}
+                to="/profile/$userId"
+                params={{ userId: account.ProfileId }}
+                className="font-bold leading-relaxed text-white"
+              >
+                {t('myUser')}
+              </Link>
+            )}
             <Link
               onClick={() => toggleOpen()}
-              to="/"
-              className="font-bold leading-relaxed text-white"
-            >
-              {t('myUser')}
-            </Link>
-            {/* )} */}
-            <Link
-              onClick={() => toggleOpen()}
-              to="/"
+              to="/search"
               className="font-bold leading-relaxed text-white"
             >
               {t('search')}
             </Link>
             <Link
               onClick={() => toggleOpen()}
-              to="/"
+              to="/guides"
               className="font-bold leading-relaxed text-white"
             >
               {t('La Brújula en PDF')}
             </Link>
             <Link
               onClick={() => toggleOpen()}
-              to="/"
+              to="/about"
               className="font-bold leading-relaxed text-white"
             >
               {t('aboutUs')}
@@ -152,20 +156,20 @@ export const Navbar = () => {
             </a>
             <Link
               onClick={() => toggleOpen()}
-              to="/"
+              to="/contact"
               className="font-bold leading-relaxed text-white"
             >
               {t('contact')}
             </Link>
-            {/* {isLoggedIn && (
+            {isLoggedIn && (
               <Link
                 onClick={() => toggleOpen()}
-                to="/cerrar-sesion"
+                to="/auth/logout"
                 className="font-bold leading-relaxed text-white block mt-6"
               >
                 {t('logout')}
               </Link>
-            )} */}
+            )}
           </nav>
         </div>
       </div>

@@ -4,5 +4,12 @@
   "Nombre": "Nombre",
   "Correo electrónico": "Correo electrónico",
   "Mensaje": "Mensaje",
-  "Enviar": "Enviar"
+  "Enviar": "Enviar",
+  "Directora": "Directora",
+  "Diseño": "Diseño",
+  "Contacto": "Contacto",
+  "Whatsapp": "Whatsapp",
+  "Teléfono": "Teléfono",
+  "Visítanos": "Visítanos",
+  "address": "<0>{contactInformation.address}</0>"
 }

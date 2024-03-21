@@ -1,34 +1,12 @@
-import './index.css';
-
 import { StrictMode } from 'react';
 import ReactDOM from 'react-dom/client';
-import { RouterProvider, createRouter } from '@tanstack/react-router';
 
+import './index.css';
 import './i18n.ts';
 
-// Import the generated route tree
-import { routeTree } from './routeTree.gen';
-import QueryProvider, {
-  queryClient,
-} from './shared/providers/queryProvider.tsx';
-
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  basepath: import.meta.env.BASE_URL,
-  context: {
-    queryClient,
-  },
-  defaultPreload: 'intent',
-  defaultPreloadStaleTime: 0,
-});
-
-// Register the router instance for type safety
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router;
-  }
-}
+import QueryProvider from './shared/providers/queryProvider.tsx';
+import { UserProvider } from './shared/providers/authProvider.tsx';
+import App from './App.tsx';
 
 // Render the app
 const rootElement = document.getElementById('root')!;
@@ -37,7 +15,9 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <QueryProvider>
-        <RouterProvider router={router} />
+        <UserProvider>
+          <App />
+        </UserProvider>
       </QueryProvider>
     </StrictMode>
   );

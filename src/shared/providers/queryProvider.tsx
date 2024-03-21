@@ -4,20 +4,23 @@ import {
   QueryClient,
   QueryClientProvider,
 } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import { ReactNode, useCallback, useMemo, useState } from 'react';
+import { useAuth } from './authProvider';
+import { AxiosError } from 'axios';
+import React from 'react';
 
-const unauthorizedStatuses = [401, 403];
+const unauthorizedStatuses = [401];
 
 function useGlobalErrors({
   onAuthError = () => {},
   onServerError = () => {},
   onRecover = () => {},
 }) {
-  const triggerError = (error: unknown) => {
-    const {
-      // @ts-ignore
-      response: { status },
-    } = error;
+  const triggerError = (error: Error | AxiosError) => {
+    let status = 500;
+    if (typeof error === typeof AxiosError) {
+      status = (error as AxiosError).response.status;
+    }
 
     if (unauthorizedStatuses.includes(status)) {
       onAuthError();
@@ -51,25 +54,28 @@ function useGlobalErrors({
   return { queryCache, mutationCache };
 }
 
-const { queryCache, mutationCache } = useGlobalErrors({
-  onAuthError: () => {},
-});
+function QueryProvider({ children }: { children: ReactNode }) {
+  const { queryCache, mutationCache } = useGlobalErrors({});
 
-export const queryClient = new QueryClient({
-  queryCache,
-  mutationCache,
-  defaultOptions: {
-    queries: {
-      retry: false,
-    },
-    mutations: {
-      retry: false,
-    },
-  },
-});
-
-export default function QueryProvider({ children }: { children: ReactNode }) {
+  const queryClient = useMemo(
+    () =>
+      new QueryClient({
+        queryCache,
+        mutationCache,
+        defaultOptions: {
+          queries: {
+            retry: false,
+          },
+          mutations: {
+            retry: false,
+          },
+        },
+      }),
+    []
+  );
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
 }
+
+export default React.memo(QueryProvider);

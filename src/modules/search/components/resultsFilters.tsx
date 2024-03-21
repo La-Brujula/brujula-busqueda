@@ -1,15 +1,15 @@
-import areas from '@shared/constants/areas.json';
 import genders from '@shared/constants/genders.json';
 import regiones from '@shared/constants/regiones.json';
 import { useCallback, useState } from 'react';
-import { getSubAreaObjectFromId, getTitle } from '@shared/utils/areaUtils';
 import { ExtraFilters } from './extraFilters';
-import { Search } from '../types/searchParams';
-import { Input } from '@/shared/components/input';
+import { Search, searchSchema } from '../types/searchParams';
+import Input from '@/shared/components/input';
 import { IconButton } from '@mui/material';
 import { DeleteOutlined } from '@mui/icons-material';
 import { useTranslation } from 'react-i18next';
 import { UseFormRegister, UseFormReset } from 'react-hook-form';
+import ActivityFilter from './activityFilter';
+import { useNavigate } from '@tanstack/react-router';
 
 export const ResultsFilter = (props: {
   filters: Search;
@@ -19,10 +19,12 @@ export const ResultsFilter = (props: {
   const [isVisible, setIsVisible] = useState(false);
   const [moreFiltersVisible, setMoreFiltersVisible] = useState(false);
   const { t } = useTranslation('search');
+  const navigate = useNavigate();
 
   const clearFilters = useCallback(() => {
-    props.reset();
-  }, [props.reset]);
+    props.reset(searchSchema.parse({}));
+    navigate({ to: '/search', search: {}, replace: true });
+  }, [props.reset, navigate]);
 
   return (
     <div className="">
@@ -49,39 +51,10 @@ export const ResultsFilter = (props: {
               <DeleteOutlined />
             </IconButton>
           </div>
-          <Input
-            label={t('Categoría')}
+          <ActivityFilter
             register={props.register}
-            fieldName="activity"
-            type="groupedSelect"
-            groupedItems={Object.fromEntries(
-              Object.entries(areas).map(([area, subareas], i) => [
-                area,
-                Object.keys(subareas).map((subarea, n) => ({
-                  key: [i + 1, (n + 1).toString().padStart(2, '0')].join(''),
-                  label: subarea,
-                })),
-              ])
-            )}
+            filters={props.filters}
           />
-
-          {props.filters.activity !== undefined &&
-            props.filters.activity?.length >= 3 && (
-              <Input
-                label={t('Actividad')}
-                register={props.register}
-                fieldName="activity"
-                type="select"
-                items={Object.keys(
-                  getSubAreaObjectFromId(props.filters.activity.slice(0, 3))
-                )
-                  .filter((activity) => getTitle(activity, 'other'))
-                  .map((activity) => ({
-                    key: activity,
-                    label: getTitle(activity, 'other'),
-                  }))}
-              />
-            )}
           <Input
             label={t('Ubicación')}
             register={props.register}

@@ -1,11 +1,11 @@
 import { Skeleton } from '@mui/material';
 import { ReactNode } from 'react';
 import { ErrorMessage } from './errorMessage';
+import React from 'react';
 
 type DataSuspenseProps = {
   loading: boolean;
   children: ReactNode;
-} & {
   error: Error | undefined;
   errorComponent?: ReactNode;
 };
@@ -19,4 +19,4 @@ function DataSuspense(props: DataSuspenseProps) {
   return props.children;
 }
 
-export default DataSuspense;
+export default React.memo(DataSuspense);

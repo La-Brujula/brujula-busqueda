@@ -16,9 +16,7 @@ export const Route = createRootRouteWithContext<QueryClientProvider>()({
   component: () => (
     <>
       <Navbar />
-      <Container>
-        <Outlet />
-      </Container>
+      <Outlet />
       <Footer />
       {import.meta.env.DEV && (
         <>
