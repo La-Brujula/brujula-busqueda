@@ -26,7 +26,7 @@ export const UserCard = ({ user }: { user: UserDTO }) => {
               ? '/guias/fotoDePerfil/casita.jpg'
               : '/guias/fotoDePerfil/Monito.jpg'
           }
-          alt="ImagenPreminada"
+          alt="ImagenPredeterminada"
           className="size-20 rounded-full bg-white shrink-0 row-span-2
           object-cover object-center"
           loading="eager"

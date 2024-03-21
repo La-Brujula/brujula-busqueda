@@ -1,10 +1,14 @@
+import { useLoggedInAccount } from '@/shared/hooks/useLoggedInAccount';
+import { useAuth } from '@/shared/providers/authProvider';
 import { IBackendProfile } from '@/shared/types/user';
 import ErrorMessage from '@shared/components/errorMessage';
 import { getTitle } from '@shared/utils/areaUtils';
+import { Link } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 
 export const ProfileHeader = ({ user }: { user: IBackendProfile }) => {
   const { t } = useTranslation('user');
+  const account = useLoggedInAccount();
 
   return !!user ? (
     <div className="max-w-2xl mx-auto w-full">
@@ -69,6 +73,14 @@ export const ProfileHeader = ({ user }: { user: IBackendProfile }) => {
           )}
           <p className="text-xs">{user.location}</p>
         </div>
+        {account !== null && account.email == user.primaryEmail && (
+          <Link
+            to="/profile/edit/basic"
+            className="bg-primary p-4 py-2 rounded-md text-white"
+          >
+            {t('Editar perfil')}
+          </Link>
+        )}
       </div>
     </div>
   ) : (

@@ -11,13 +11,16 @@ import WhatsApp from '@mui/icons-material/WhatsApp';
 import Twitter from '@mui/icons-material/X';
 import YouTube from '@mui/icons-material/YouTube';
 import { IBackendProfile } from '@/shared/types/user';
+import { useTranslation } from 'react-i18next';
 
 export const ContactSection = ({ user }: { user: IBackendProfile }) => {
+  const { t } = useTranslation('profile');
   return (
     <div
       className="grid grid-cols-[max-content_1fr] max-w-md
       text-left gap-4 mx-auto xl:mx-0 items-center gap-x-6 overflow-hidden"
     >
+      <h3>{t('Contacto')}</h3>
       {!!user.phoneNumbers && user.phoneNumbers.length > 0 && (
         <>
           {user.phoneNumbers.map((phoneNumber) => (
@@ -66,20 +69,21 @@ export const ContactSection = ({ user }: { user: IBackendProfile }) => {
             </a>
           </div>
         ))}
-      {!!user.website && (
-        <>
-          <h3>
-            <LinkOutlined />
-          </h3>
-          <a
-            target="_blank"
-            className="truncate block w-full"
-            href={user.website}
-          >
-            {user.website}
-          </a>
-        </>
-      )}
+      {!!user.externalLinks &&
+        user.externalLinks.map((link) => (
+          <>
+            <h3>
+              <LinkOutlined />
+            </h3>
+            <a
+              target="_blank"
+              className="truncate block w-full"
+              href={link}
+            >
+              {link}
+            </a>
+          </>
+        ))}
       {!!user.whatsapp && (
         <>
           <h3>

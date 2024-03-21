@@ -3,11 +3,14 @@
   "seeOur": "Conoce nuestro",
   "privacy": "aviso legal y de privacidad",
   "trademark": "La Brújula es una marca registrada.\nTodos los derechos reservados © 2024",
+  "login": "Inicia Sesión",
   "search": "Buscar",
   "aboutUs": "Quiénes somos",
   "home": "Inicio",
+  "createUser": "Crear usuario",
   "myUser": "Mi usuario",
   "La Brújula en PDF": "La Brújula en PDF",
   "privacyH": "Aviso legal y de privacidad",
-  "contact": "Contacto"
+  "contact": "Contacto",
+  "logout": "Cerrar sesión"
 }
