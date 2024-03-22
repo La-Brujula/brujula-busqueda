@@ -69,11 +69,11 @@ function buildGroupedSelect<T extends FieldValues>(
       id={props.fieldName}
       className={props.inputClass}
       required={props.required}
+      defaultValue=""
     >
       <option
         value=""
         unselectable="on"
-        selected
       >
         {props.label}
       </option>
@@ -103,6 +103,7 @@ function buildSelect<T extends FieldValues>(props: InputProps<'select', T>) {
       id={props.fieldName}
       className={props.inputClass}
       required={props.required}
+      defaultValue=""
     >
       <option
         value=""
