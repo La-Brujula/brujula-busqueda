@@ -1,70 +1,105 @@
 import { lang, proficiency } from '@/shared/types/languages';
+import { ArrowBackIos, DeleteOutline } from '@mui/icons-material';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import { ButtonSelect } from '@shared/components/buttonSelect';
 import languages from '@shared/constants/languages.json';
-import { ChangeEvent, useReducer } from 'react';
-import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import { ChangeEvent, useEffect, useReducer } from 'react';
+import {
+  FieldValues,
+  Path,
+  SetFieldValue,
+  UseFormRegister,
+} from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 interface language {
+  id: number;
+  type: 'select' | 'custom';
   lang: lang | 'other';
   proficiency: proficiency;
 }
 
-interface ReducerAction {
-  type: 'add' | 'remove' | 'change' | 'rebase';
-  index?: number;
-  item?: { lang: lang } | { proficiency: proficiency };
-  state?: language[];
-}
+type ReducerAction =
+  | {
+      type: 'add';
+    }
+  | {
+      type: 'remove';
+      id: number;
+    }
+  | {
+      type: 'change';
+      id: number;
+      item: { lang: lang } | { proficiency: proficiency };
+    }
+  | {
+      type: 'switchType';
+      id: number;
+      newType: 'select' | 'custom';
+    }
+  | {
+      type: 'rebase';
+      state: language[];
+    };
 
-const reducer = (state: language[], action: ReducerAction): language[] => {
+function reducer(state: language[], action: ReducerAction): language[] {
   const newArray = !!state ? state.slice() : [];
   switch (action.type) {
     case 'add':
       newArray.splice(newArray.length, 0, {
-        lang: 'other',
+        id: Math.random(),
+        type: 'select',
+        lang: 'en',
         proficiency: 'basic',
       });
       return newArray;
     case 'remove':
-      if (action.index === undefined) throw 'Missing index';
-      newArray.splice(action.index, 1);
-      return newArray;
+      if (action.id === undefined) throw 'Missing id';
+      return newArray.filter((v) => v.id !== action.id);
     case 'change':
-      if (action.index === undefined) throw 'Missing index';
-      if (!action.item) throw 'Missing item';
-      return newArray.map((item, index) => {
-        if (index !== action.index) {
+      if (action.id === undefined) throw 'Missing id';
+      if (action.item === undefined) throw 'Missing item';
+      return newArray.map((item) => {
+        if (item.id !== action.id) {
           return { ...item };
         }
+        const newItem = { ...item, ...action.item };
         return {
-          ...item,
-          ...action.item,
+          ...newItem,
+          type: languages.includes(newItem.lang) ? 'select' : 'custom',
         };
       });
     case 'rebase':
       if (action.state === undefined) return [];
       return action.state;
   }
-};
+}
 
 export function LanguageListForm<T extends FieldValues>(props: {
-  register: UseFormRegister<T>;
+  setValue: SetFieldValue<T>;
   fieldName: Path<T>;
   defaultState?: { lang: lang; proficiency: proficiency }[];
 }) {
   const { t } = useTranslation('auth');
-  const [state, dispatch] = useReducer(reducer, props.defaultState);
+  const [state, dispatch] = useReducer(
+    reducer,
+    (props.defaultState || [{ lang: 'es', proficiency: 'native' }]).map(
+      (v) => ({
+        id: Math.random(),
+        type: languages.includes(v.lang) ? 'select' : 'custom',
+        ...v,
+      })
+    ) as language[]
+  );
 
   const updateValue =
     (i: number, property: 'lang' | 'proficiency') =>
     (ev: ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
       dispatch({
         type: 'change',
-        index: i,
+        id: i,
         item:
           property == 'lang'
             ? { lang: ev.currentTarget.value as lang }
@@ -72,26 +107,31 @@ export function LanguageListForm<T extends FieldValues>(props: {
       });
     };
 
+  useEffect(() => {
+    props.setValue(
+      props.fieldName,
+      state.map((v) => ({ lang: v.lang, proficiency: v.proficiency }))
+    );
+  });
+
   return (
     <div className="col-span-2">
       <>
         {!!state &&
-          state.map(
-            (lang: { lang: lang; proficiency: proficiency }, i: number) => (
-              <div
-                key={lang.lang}
-                className="mb-8"
-              >
-                <div className="mb-4 flex flex-col md:flex-row gap-4">
-                  <div className="flex flex-col gap-4 w-full">
+          state.map((value: language, i: number) => (
+            <div
+              key={value.id}
+              className="mb-8"
+            >
+              <div className="mb-4 flex flex-col md:flex-row gap-4">
+                <div className="flex flex-col gap-4 w-full">
+                  {value.type == 'select' ? (
                     <select
-                      // @ts-ignore
-                      {...props.register(`${props.fieldName}[${i}].lang`)}
-                      onChange={updateValue(i, 'lang')}
+                      onChange={updateValue(value.id, 'lang')}
                       className="w-full"
-                      value={lang.lang}
+                      value={value.type === 'select' ? value.lang : 'other'}
                     >
-                      <option value="other">{t('Otro')}</option>
+                      <option value="">{t('Otro')}</option>
                       {languages.map((defLang) => (
                         <option
                           value={defLang}
@@ -101,45 +141,79 @@ export function LanguageListForm<T extends FieldValues>(props: {
                         </option>
                       ))}
                     </select>
-                    {!languages.includes(lang.lang) && (
+                  ) : (
+                    <div className="flex flex-row gap-4">
                       <input
                         type="text"
-                        onChange={updateValue(i, 'lang')}
+                        onChange={updateValue(value.id, 'lang')}
                         placeholder={t('Escribe aquí el nombre de tu idioma')}
+                        className="grow"
+                        value={value.lang}
                       />
-                    )}
-                  </div>
-                  {state.length > 1 && (
-                    <IconButton
-                      onClick={() =>
-                        dispatch({
-                          type: 'remove',
-                          index: i,
-                        })
-                      }
-                    >
-                      <Tooltip title={t('Borrar')}>
-                        <CloseOutlined />
-                      </Tooltip>
-                    </IconButton>
+                      <IconButton
+                        onClick={() =>
+                          dispatch({
+                            type: 'change',
+                            id: value.id,
+                            item: { lang: 'es' },
+                          })
+                        }
+                      >
+                        <Tooltip title={t('Volver a lista')}>
+                          <DeleteOutline />
+                        </Tooltip>
+                      </IconButton>
+                    </div>
                   )}
                 </div>
-                <div className="grow">
-                  <ButtonSelect
-                    register={props.register}
-                    // @ts-ignore
-                    fieldName={`${props.fieldName}[${i}].proficiency`}
-                    items={[
-                      { value: 'basic', label: t('Básico') },
-                      { value: 'intermediate', label: 'Intermedio' },
-                      { value: 'advanced', label: 'Avanzado' },
-                      { value: 'native', label: t('Lengua Materna') },
-                    ]}
-                  />
+                {state.length > 1 && (
+                  <IconButton
+                    onClick={() =>
+                      dispatch({
+                        type: 'remove',
+                        id: value.id,
+                      })
+                    }
+                  >
+                    <Tooltip title={t('Borrar')}>
+                      <CloseOutlined />
+                    </Tooltip>
+                  </IconButton>
+                )}
+              </div>
+              <div className="grow">
+                <div className="flex flex-row flex-wrap gap-4 items-stretch md:items-center justify-center mb-4">
+                  {(
+                    [
+                      'basic',
+                      'intermediate',
+                      'advanced',
+                      'native',
+                    ] as proficiency[]
+                  ).map((proficiency) => (
+                    <div
+                      key={value.id + proficiency}
+                      className={[
+                        'flex flex-col gap-2 text-left',
+                        'relative w-fit rounded-md ring-2 ring-primary',
+                        'text-primary has-[:checked]:bg-primary has-[:checked]:text-white',
+                        'flex items-center justify-center py-2 px-4',
+                      ].join(' ')}
+                    >
+                      <label>{t(proficiency)}</label>
+                      <input
+                        checked={value.proficiency === proficiency}
+                        onChange={updateValue(value.id, 'proficiency')}
+                        className="absolute h-full w-full cursor-pointer opacity-0"
+                        type="radio"
+                        value={proficiency}
+                      />
+                    </div>
+                  ))}
                 </div>
               </div>
-            )
-          )}
+            </div>
+          ))}
         <div
           className="cursor-pointer mt-6 px-4 py-2 bg-secondary text-white
         rounded-md mx-auto w-fit"

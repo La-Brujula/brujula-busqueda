@@ -15,10 +15,9 @@ import {
   useNavigate,
   useRouter,
 } from '@tanstack/react-router';
-import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { StringArrayForm } from '../../../modules/auth/components/phonesInputs';
+import { StringArrayForm } from '../../../modules/auth/components/stringArrayForm';
 import DataSuspense from '@/shared/components/dataSuspense';
 import ErrorMessage from '@/shared/components/errorMessage';
 import Vimeo from '@/shared/icons/vimeo';

@@ -39,7 +39,7 @@ function AreasRegistration() {
       user?.primaryActivity,
       user?.secondaryActivity,
       user?.thirdActivity,
-    ].filter((f) => !!f)
+    ].filter((f) => f !== null)
   );
 
   const { t } = useTranslation('auth');
@@ -142,7 +142,7 @@ function AreasRegistration() {
             rounded-md mx-auto w-fit"
               onClick={() => dispatch({ type: 'add' })}
             >
-              {t('Agregar otra actividad')}
+              {t('Encontrar actividad manualmente')}
             </button>
           </div>
         )}

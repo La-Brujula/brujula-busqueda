@@ -21,29 +21,27 @@ export const ContactSection = ({ user }: { user: IBackendProfile }) => {
       text-left gap-4 mx-auto xl:mx-0 items-center gap-x-6 overflow-hidden"
     >
       <h3>{t('Contacto')}</h3>
-      {!!user.phoneNumbers && user.phoneNumbers.length > 0 && (
-        <>
-          {user.phoneNumbers.map((phoneNumber) => (
-            <div
-              className="grid grid-cols-subgrid col-span-2"
-              key={phoneNumber}
-            >
-              <h3>
-                <PhoneOutlined />
-              </h3>
-              <div className="w-full">
-                <a
-                  target="_blank"
-                  className="truncate block w-full"
-                  href={'tel:' + phoneNumber}
-                >
-                  {phoneNumber}
-                </a>
-              </div>
+      {!!user.phoneNumbers &&
+        user.phoneNumbers.length > 0 &&
+        user.phoneNumbers.map((phoneNumber) => (
+          <div
+            className="grid grid-cols-subgrid col-span-2"
+            key={phoneNumber}
+          >
+            <h3>
+              <PhoneOutlined />
+            </h3>
+            <div className="w-full">
+              <a
+                target="_blank"
+                className="truncate block w-full"
+                href={'tel:' + phoneNumber}
+              >
+                {phoneNumber}
+              </a>
             </div>
-          ))}
-        </>
-      )}
+          </div>
+        ))}
       {[
         user.type != 'moral'
           ? user.primaryEmail
@@ -71,7 +69,10 @@ export const ContactSection = ({ user }: { user: IBackendProfile }) => {
         ))}
       {!!user.externalLinks &&
         user.externalLinks.map((link) => (
-          <>
+          <div
+            className="grid grid-cols-subgrid col-span-full"
+            key={link}
+          >
             <h3>
               <LinkOutlined />
             </h3>
@@ -82,7 +83,7 @@ export const ContactSection = ({ user }: { user: IBackendProfile }) => {
             >
               {link}
             </a>
-          </>
+          </div>
         ))}
       {!!user.whatsapp && (
         <>

@@ -37,9 +37,7 @@ function ErrorHandler({ error }) {
               {t('Regresar')}
             </button>
             <button
-              onClick={() => {
-                navigate({ to: location.pathname, replace: true });
-              }}
+              onClick={window.location.reload}
               className="button bg-secondary h-11"
             >
               {t('Refrescar página actual')}

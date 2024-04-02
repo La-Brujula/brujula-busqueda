@@ -58,7 +58,7 @@ export function useAreasReducer(subareas?: string[], initializer?: any) {
     {
       activities: subareas || [],
     },
-    initializer
+    () => ({ activities: initializer() })
   );
 
   const removeElement = useCallback(

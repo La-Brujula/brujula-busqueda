@@ -1,5 +1,15 @@
-import React, { HTMLInputTypeAttribute, ReactNode, useMemo } from 'react';
-import { FieldValues, Path, UseFormRegister } from 'react-hook-form';
+import React, {
+  HTMLInputTypeAttribute,
+  ReactNode,
+  useMemo,
+  useRef,
+} from 'react';
+import {
+  FieldValues,
+  Path,
+  UseFormRegister,
+  UseFormRegisterReturn,
+} from 'react-hook-form';
 
 type InputProps<
   Type extends
@@ -21,6 +31,7 @@ type InputProps<
   ? {
       type: 'textArea';
       rows?: number;
+      maxLength: number;
     }
   : Type extends 'select'
     ? {
@@ -43,6 +54,7 @@ type InputProps<
           }
         : Type extends HTMLInputTypeAttribute
           ? {
+              maxLength?: number;
               type: HTMLInputTypeAttribute;
               autoComplete?: string;
             } & React.DetailedHTMLProps<
@@ -61,11 +73,12 @@ const internalProps = [
   'required',
 ];
 function buildGroupedSelect<T extends FieldValues>(
-  props: InputProps<'groupedSelect', T>
+  props: InputProps<'groupedSelect', T>,
+  registerReturn: UseFormRegisterReturn
 ) {
   return (
     <select
-      {...props.register(props.fieldName, { required: props.required })}
+      {...registerReturn}
       id={props.fieldName}
       className={props.inputClass}
       required={props.required}
@@ -96,10 +109,13 @@ function buildGroupedSelect<T extends FieldValues>(
   );
 }
 
-function buildSelect<T extends FieldValues>(props: InputProps<'select', T>) {
+function buildSelect<T extends FieldValues>(
+  props: InputProps<'select', T>,
+  registerReturn: UseFormRegisterReturn
+) {
   return (
     <select
-      {...props.register(props.fieldName, { required: props.required })}
+      {...registerReturn}
       id={props.fieldName}
       className={props.inputClass}
       required={props.required}
@@ -124,11 +140,12 @@ function buildSelect<T extends FieldValues>(props: InputProps<'select', T>) {
 }
 
 function buildTextArea<T extends FieldValues>(
-  props: InputProps<'textArea', T>
+  props: InputProps<'textArea', T>,
+  registerReturn: UseFormRegisterReturn
 ) {
   return (
     <textarea
-      {...props.register(props.fieldName, { required: props.required })}
+      {...registerReturn}
       id={props.fieldName}
       className={props.inputClass}
       rows={props.rows || 3}
@@ -138,16 +155,18 @@ function buildTextArea<T extends FieldValues>(
 }
 
 function buildInput<T extends FieldValues>(
-  props: InputProps<HTMLInputTypeAttribute, T>
+  props: InputProps<HTMLInputTypeAttribute, T>,
+  registerReturn: UseFormRegisterReturn
 ) {
+  const allowedProps = Object.fromEntries(
+    Object.entries(props).filter(([k, _]) => !internalProps.includes(k))
+  );
   return (
     <input
       className={props.inputClass}
-      {...Object.fromEntries(
-        Object.entries(props).filter(([k, v]) => !internalProps.includes(k))
-      )}
+      {...allowedProps}
       id={props.fieldName}
-      {...props.register(props.fieldName, { required: props.required })}
+      {...registerReturn}
     />
   );
 }
@@ -160,19 +179,29 @@ function Input<T extends FieldValues>(
     | InputProps<'custom', T>
     | InputProps<HTMLInputTypeAttribute, T>
 ) {
-  const inputElement: ReactNode = useMemo(() => {
+  const registerReturn = useMemo(
+    () => props.register(props.fieldName, { required: props.required }),
+    [props]
+  );
+  const inputElement = useMemo(() => {
     switch (props.type) {
       case 'textArea':
-        return buildTextArea(props as InputProps<'textArea', T>);
+        return buildTextArea(
+          props as InputProps<'textArea', T>,
+          registerReturn
+        );
       case 'select':
-        return buildSelect(props as InputProps<'select', T>);
+        return buildSelect(props as InputProps<'select', T>, registerReturn);
       case 'groupedSelect':
-        return buildGroupedSelect(props as InputProps<'groupedSelect', T>);
+        return buildGroupedSelect(
+          props as InputProps<'groupedSelect', T>,
+          registerReturn
+        );
       case 'custom':
         const CustomElement = (props as InputProps<'custom', T>).component;
         return <CustomElement {...props} />;
       default:
-        return buildInput(props);
+        return buildInput(props, registerReturn);
     }
   }, [props]);
 

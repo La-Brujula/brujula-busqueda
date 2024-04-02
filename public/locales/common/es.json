@@ -1,4 +1,7 @@
 {
+  "Estás a punto de borrar tu cuenta {{email}}, esto no se puede deshacer": {
+    "\n        \n        ¿Quieres continuar?": "Estás a punto de borrar tu cuenta {{email}}, esto no se puede deshacer.\n        \n        ¿Quieres continuar?"
+  },
   "basic": "Básico",
   "intermediate": "Intermedio",
   "advanced": "Avanzado",

@@ -10,7 +10,8 @@ export const ProfileBadge = ({ user }: { user: IBackendProfile }) => {
       {!!user.profilePictureUrl ? (
         <img
           src={user.profilePictureUrl}
-          alt={`${user.nickname || user.fullName} profile picture`}
+          crossOrigin="anonymous"
+          alt={`${user.nickName || user.fullName} profile picture`}
           className="size-20 rounded-full shrink-0 row-span-2 object-cover
           object-center"
         />
@@ -21,7 +22,7 @@ export const ProfileBadge = ({ user }: { user: IBackendProfile }) => {
               ? '/guias/fotoDePerfil/casita.jpg'
               : '/guias/fotoDePerfil/Monito.jpg'
           }
-          alt="ImagenPreminada"
+          alt="ImagenPredeterminada"
           className="size-20 rounded-full bg-white shrink-0 row-span-2
           object-cover object-center"
           loading="eager"
@@ -29,8 +30,8 @@ export const ProfileBadge = ({ user }: { user: IBackendProfile }) => {
       )}
       <div className="flex flex-col gap-1 text-left">
         <h3 className="text-md font-normal">
-          {user.nickname
-            ? user.nickname
+          {user.nickName
+            ? user.nickName
             : user.fullName
               ? user.fullName
               : user.primaryEmail}

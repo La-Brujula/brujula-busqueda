@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LanguageListForm } from '../../../modules/auth/components/languageListForm';
@@ -8,7 +8,6 @@ import {
   useNavigate,
   useRouter,
 } from '@tanstack/react-router';
-import { useAuth } from '@/shared/providers/authProvider';
 import { useCurrentProfile } from '@/shared/hooks/useCurrentProfile';
 import { useUpdateMe } from '@/shared/hooks/useUpdateMe';
 import { ErrorMessage } from '@/shared/components/errorMessage';
@@ -50,8 +49,7 @@ function CharacteristicsPage() {
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-[max-content_minmax(12rem,_24rem)]
-        text-left gap-8 mx-auto max-w-lg"
+        className="flex flex-col gap-8 w-full items-stretch"
       >
         <h2 className="col-span-full text-secondary">
           {t('Información Adicional')}
@@ -61,11 +59,11 @@ function CharacteristicsPage() {
         text-left gap-4 mx-auto items-center gap-x-8 w-full"
         >
           <Input
-            fieldName="characteristics"
+            fieldName="biography"
             label={t('Semblanza')}
             type="textArea"
             rows={5}
-            maxLength={300}
+            maxLength={500}
             register={register}
             placeholder={t(
               'Escribe aquí las características que te identifican dentro de la industria'
@@ -80,7 +78,7 @@ function CharacteristicsPage() {
             {t('Idioma')}:
           </label>
           <LanguageListForm
-            register={register}
+            setValue={setValue}
             fieldName="languages"
             defaultState={user?.languages}
           />

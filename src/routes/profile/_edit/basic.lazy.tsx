@@ -28,18 +28,21 @@ function BasicInfo() {
   const { mutate, isPending, error: mutateError } = useUpdateMe();
   const { data: user, isLoading: loading, error } = useCurrentProfile();
 
-  const { register, handleSubmit, formState } = useForm<IUpdateBackendProfile>({
-    defaultValues: {
-      ...user,
-      probono:
-        user.probono === undefined
-          ? undefined
-          : user.probono === true
-            ? 'true'
-            : 'false',
-      birthday: user.birthday !== undefined ? user.birthday.slice(0, 10) : '',
-    },
-  });
+  const { register, handleSubmit, formState, getValues } =
+    useForm<IUpdateBackendProfile>({
+      defaultValues: {
+        ...user,
+        gender: user.type === 'moral' ? 'other' : user.gender,
+        probono:
+          user.probono === undefined
+            ? undefined
+            : user.probono === true
+              ? 'true'
+              : 'false',
+        birthday:
+          user.birthday !== undefined ? user.birthday?.slice(0, 10) : '',
+      },
+    });
 
   const onSubmit = useCallback(
     async (data: IUpdateBackendProfile) => {
@@ -86,6 +89,15 @@ function BasicInfo() {
                 required={true}
               />
               <Input
+                label={t('Nombre con el que quieres aparecer')}
+                type="text"
+                autoComplete={null}
+                register={register}
+                fieldName="nickName"
+                divClass="col-span-full"
+                required={false}
+              />
+              <Input
                 label={t('Género')}
                 type="select"
                 register={register}
@@ -93,7 +105,7 @@ function BasicInfo() {
                 divClass="col-span-full"
                 required={true}
                 items={genders.map((gender) => ({
-                  key: gender == 'Prefiero no decir' ? 'No binario' : gender,
+                  key: gender == 'Prefiero no decir' ? 'other' : gender,
                   label: t(gender, { ns: 'genders' }),
                 }))}
               />
@@ -104,7 +116,7 @@ function BasicInfo() {
                 fieldName="birthday"
                 autoComplete="birthday"
                 divClass="col-span-full"
-                required={true}
+                required={false}
               />
               <p className="col-span-full text-xs -mt-2">
                 {t('Este dato solamente es para uso interno')}
@@ -114,7 +126,7 @@ function BasicInfo() {
             <input
               type="hidden"
               {...register('gender', { required: true })}
-              value="Persona Moral"
+              value="other"
             />
           )}
         </div>
@@ -128,6 +140,7 @@ function BasicInfo() {
             autoComplete="country"
             divClass="col-span-full"
             component={CountrySelect<IUpdateBackendProfile>}
+            required={true}
           />
           <Input
             label={t('Estado')}
@@ -136,6 +149,7 @@ function BasicInfo() {
             fieldName="state"
             autoComplete="state"
             divClass="col-span-full"
+            required={true}
           />
           <Input
             label={t('Ciudad')}
@@ -144,6 +158,7 @@ function BasicInfo() {
             fieldName="city"
             autoComplete="city"
             divClass="col-span-full"
+            required={true}
           />
           <Input
             divClass="col-span-full"

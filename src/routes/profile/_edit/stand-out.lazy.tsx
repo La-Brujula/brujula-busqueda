@@ -1,10 +1,8 @@
 import { UniversidadesSelect } from '@/modules/auth/components/universidadesSelect';
-import CountrySelect from '@/shared/components/countrySelect';
 import { ErrorMessage } from '@/shared/components/errorMessage';
 import Input from '@/shared/components/input';
 import { useCurrentProfile } from '@/shared/hooks/useCurrentProfile';
 import { useUpdateMe } from '@/shared/hooks/useUpdateMe';
-import { uploadImage } from '@/shared/services/imageUploadService';
 import { IUpdateBackendProfile } from '@/shared/types/user';
 import { ButtonSelect } from '@shared/components/buttonSelect';
 import { LoadingSpinner } from '@shared/components/loadingSpinner';
@@ -13,11 +11,11 @@ import {
   useNavigate,
   useRouter,
 } from '@tanstack/react-router';
-import { useCallback, useMemo } from 'react';
+import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-export const Route = createLazyFileRoute('/profile/_edit/standOut')({
+export const Route = createLazyFileRoute('/profile/_edit/stand-out')({
   component: StandoutPage,
 });
 

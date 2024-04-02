@@ -2,13 +2,12 @@ import { useTranslation } from 'react-i18next';
 import { ContactSection } from '@/modules/profile/components/contactInfo';
 import { ProfileHeader } from '@/modules/profile/components/profileHeader';
 import { Recommendations } from '@/modules/profile/components/recommend';
-import { Link, createLazyFileRoute, useParams } from '@tanstack/react-router';
+import { Link, createLazyFileRoute } from '@tanstack/react-router';
 import { useMemo } from 'react';
 import { profileQueryOptions } from '@/modules/profile/queries/userProfile';
 import { useQuery } from '@tanstack/react-query';
 import DataSuspense from '@/shared/components/dataSuspense';
 import { LoadingSpinner } from '@/shared/components/loadingSpinner';
-import { useAuth } from '@/shared/providers/authProvider';
 import { useLoggedInAccount } from '@/shared/hooks/useLoggedInAccount';
 
 // i18next-parser static types
@@ -37,9 +36,7 @@ function PendingUserProfilePage() {
 }
 
 export function UserProfilePage() {
-  const { userId } = useParams({
-    from: '/profile/$userId',
-  });
+  const { userId } = Route.useParams();
 
   const account = useLoggedInAccount();
 
@@ -84,10 +81,10 @@ export function UserProfilePage() {
           xl:max-w-3xl mx-auto xl:mx-0 text-left xl:-translate-y-42"
           >
             <Recommendations user={user} />
-            {!!user?.characteristics && (
+            {!!user?.biography && (
               <div>
                 <h4 className="font-normal text-primary">{t('Semblanza')}</h4>
-                <p>{user.characteristics}</p>
+                <p>{user.biography}</p>
               </div>
             )}
             {!!user?.languages && (
@@ -139,10 +136,10 @@ export function UserProfilePage() {
         </div>
         {account?.email == user?.primaryEmail && (
           <Link
-            to="/auth/logout"
+            to="/auth/delete-account"
             className="!text-slate-400 text-sm text-center block"
           >
-            Borrar cuenta
+            {t('Borrar cuenta')}
           </Link>
         )}
       </div>

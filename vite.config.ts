@@ -1,4 +1,3 @@
-import MillionLint from '@million/lint';
 import { defineConfig, loadEnv } from 'vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -7,7 +6,6 @@ import { TanStackRouterVite } from '@tanstack/router-vite-plugin';
 
 // https://vitejs.dev/config/
 var plugins = [react(), TanStackRouterVite()];
-// plugins.unshift(MillionLint.vite());
 export default defineConfig(({ command, mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
   return {

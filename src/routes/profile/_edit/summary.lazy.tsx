@@ -1,8 +1,5 @@
 import DataSuspense from '@/shared/components/dataSuspense';
 import { useCurrentProfile } from '@/shared/hooks/useCurrentProfile';
-import { useProfile } from '@/shared/hooks/useUser';
-import { useAuth } from '@/shared/providers/authProvider';
-import { ProfileHeader } from '@modules/profile/components/profileHeader';
 import EmailOutlined from '@mui/icons-material/EmailOutlined';
 import PhoneOutlined from '@mui/icons-material/PhoneOutlined';
 import ErrorMessage from '@shared/components/errorMessage';
@@ -44,10 +41,10 @@ function ProfileSummary() {
         <div className="col-span-2"></div>
         <h3>{user?.type != 'moral' ? t('Nombre') : t('Razón Social')}</h3>
         <p className="text-left text-primary">{user?.fullName}</p>
-        {user?.nickname && (
+        {user?.nickName && (
           <>
             <h3>{t('Nickname')}</h3>
-            <p className="text-left text-primary">{user?.nickname}</p>
+            <p className="text-left text-primary">{user?.nickName}</p>
           </>
         )}
         {user?.type != 'moral' && (
@@ -84,7 +81,7 @@ function ProfileSummary() {
         </a>
       </div>
       <div className="flex flex-row gap-4 self-center justify-center my-8">
-        <Link to="/profile/edit/standOut">
+        <Link to="/profile/edit/stand-out">
           <div className="button font-bold">{t('Continuar')}</div>
         </Link>
       </div>

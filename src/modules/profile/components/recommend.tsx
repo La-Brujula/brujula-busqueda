@@ -15,9 +15,9 @@ export const Recommendations = ({ user }: { user: IBackendProfile }) => {
   const { mutate, isPending, error } = useToggleRecommendation(user?.id);
 
   const isAlreadyRecommended = useMemo(() => {
-    if (isLoggedIn) return false;
+    if (!isLoggedIn || !user) return false;
     return (
-      user.recommendations.find(
+      user.recommendations?.find(
         (profile: UserDTO) => profile.id == account.ProfileId
       ) !== undefined
     );

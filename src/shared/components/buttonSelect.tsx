@@ -5,7 +5,7 @@ export function ButtonSelect<T extends FieldValues>(props: {
   register: UseFormRegister<T>;
   fieldName: Path<T>;
   items: { value: any; label: string }[];
-  buttonDivClass: string;
+  buttonDivClass?: string;
 }) {
   return (
     <div

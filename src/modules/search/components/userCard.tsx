@@ -15,6 +15,7 @@ export const UserCard = ({ user }: { user: UserDTO }) => {
       {!!user.profilePictureUrl ? (
         <img
           src={user.profilePictureUrl}
+          crossOrigin="anonymous"
           alt={`${user.nickName || user.fullName} profile picture`}
           className="size-20 rounded-full shrink-0 row-span-2 object-cover
           object-center"
@@ -40,6 +41,9 @@ export const UserCard = ({ user }: { user: UserDTO }) => {
           <h2 className="font-normal text-xl lg:text-lg">
             {!!user.nickName ? user.nickName : user.fullName}
           </h2>
+          {!!user.nickName && (
+            <p className="font-normal text-sm">{user.fullName}</p>
+          )}
         </div>
       </div>
       <div className="">

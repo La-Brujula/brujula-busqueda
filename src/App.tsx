@@ -1,10 +1,6 @@
 import { lazy, useMemo } from 'react';
 
-import {
-  RouterProvider,
-  createHashHistory,
-  createRouter,
-} from '@tanstack/react-router';
+import { RouterProvider, createRouter } from '@tanstack/react-router';
 import { useQueryClient } from '@tanstack/react-query';
 
 // Import the generated route tree
@@ -14,12 +10,9 @@ import React from 'react';
 
 const ErrorHandler = lazy(() => import('./shared/navigation/errorHandler.tsx'));
 
-const hashHistory = createHashHistory();
-
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  basepath: import.meta.env.BASE_URL,
   context: {
     queryClient: null,
   },
@@ -27,7 +20,6 @@ const router = createRouter({
   defaultPreloadStaleTime: 0,
   defaultErrorComponent: ErrorHandler,
   defaultPendingComponent: LoadingSpinner,
-  history: hashHistory,
 });
 
 // Register the router instance for type safety
