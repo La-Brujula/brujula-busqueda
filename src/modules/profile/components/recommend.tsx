@@ -18,7 +18,7 @@ export const Recommendations = ({ user }: { user: IBackendProfile }) => {
     if (!isLoggedIn || !user) return false;
     return (
       user.recommendations?.find(
-        (profile: UserDTO) => profile.id == account.ProfileId
+        (profile: UserDTO) => profile.id == account!.ProfileId
       ) !== undefined
     );
   }, [user.recommendations]);
@@ -29,7 +29,7 @@ export const Recommendations = ({ user }: { user: IBackendProfile }) => {
 
   return (
     <div className="flex flex-col items-center">
-      {isLoggedIn && user.id !== account.ProfileId && (
+      {isLoggedIn && user.id !== account!.ProfileId && (
         <div
           className="flex flex-col gap-2 p-4 px-12 bg-secondary
                 rounded-lg w-fit z-[1] cursor-pointer"
@@ -57,7 +57,7 @@ export const Recommendations = ({ user }: { user: IBackendProfile }) => {
         className={[
           'bg-black bg-opacity-20 p-4 w-full',
           'rounded-lg flex flex-row gap-8 items-center',
-          isLoggedIn && account.email != user.primaryEmail && 'pt-8 -mt-4',
+          isLoggedIn && account!.email != user.primaryEmail && 'pt-8 -mt-4',
         ].join(' ')}
       >
         <img

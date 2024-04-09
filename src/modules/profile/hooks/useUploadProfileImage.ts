@@ -21,7 +21,7 @@ export function useUploadProfileImage() {
       formdata
     );
     queryClient.refetchQueries({
-      queryKey: ['profiles', account.ProfileId],
+      queryKey: ['profiles', account!.ProfileId],
     });
     return backendResponse;
   };

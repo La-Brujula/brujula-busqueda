@@ -9,10 +9,10 @@ function UploadImage(props: {
   imageType: 'profile' | 'cover';
 }) {
   const { t } = useTranslation('profile');
-  const ref = useRef<HTMLInputElement>();
+  const ref = useRef<HTMLInputElement>(null);
   const buildImagePreview = useCallback(
     async (ev: ChangeEvent<HTMLInputElement>) => {
-      const file = ev.currentTarget.files[0];
+      const file = ev.currentTarget.files![0];
       if (!(await isValidImageType(file))) {
         throw Error('Not a valid image');
       }

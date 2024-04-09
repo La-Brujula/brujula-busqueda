@@ -1,22 +1,22 @@
 import { lazy, useMemo } from 'react';
 
 import { RouterProvider, createRouter } from '@tanstack/react-router';
-import { useQueryClient } from '@tanstack/react-query';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
-import { LoadingSpinner } from './shared/components/loadingSpinner.tsx';
+import { LoadingSpinner } from './shared/components/loadingSpinner';
 import React from 'react';
 
-const ErrorHandler = lazy(() => import('./shared/navigation/errorHandler.tsx'));
+const ErrorHandler = lazy(() => import('./shared/navigation/errorHandler'));
 
 // Create a new router instance
 const router = createRouter({
   routeTree,
-  context: {
-    queryClient: null,
-  },
   defaultPreload: 'intent',
+  context: {
+    queryClient: new QueryClient(),
+  },
   defaultPreloadStaleTime: 0,
   defaultErrorComponent: ErrorHandler,
   defaultPendingComponent: LoadingSpinner,

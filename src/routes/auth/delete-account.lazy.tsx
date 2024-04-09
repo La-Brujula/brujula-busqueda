@@ -2,6 +2,7 @@ import { Container } from '@shared/layout/container';
 import { useDeleteMyUser } from '../../modules/deleteAccount/hooks/useUserDelete';
 import { Trans, useTranslation } from 'react-i18next';
 import { Link, createLazyFileRoute } from '@tanstack/react-router';
+import { useAuth } from '@/shared/providers/authProvider';
 
 export const Route = createLazyFileRoute('/auth/delete-account')({
   component: DeleteUserPage,
@@ -9,6 +10,7 @@ export const Route = createLazyFileRoute('/auth/delete-account')({
 
 function DeleteUserPage() {
   const { mutate: deleteMyAccount } = useDeleteMyUser();
+  const { account } = useAuth(['account']);
   const { t } = useTranslation('deleteAccount');
   return (
     <Container>
@@ -30,6 +32,7 @@ function DeleteUserPage() {
       </p>
       <Link
         to="/profile/$userId"
+        params={{ userId: account!.ProfileId }}
         className="button mb-4 block w-fit mx-auto"
       >
         {t('Regresar')}

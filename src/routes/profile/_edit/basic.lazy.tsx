@@ -28,21 +28,19 @@ function BasicInfo() {
   const { mutate, isPending, error: mutateError } = useUpdateMe();
   const { data: user, isLoading: loading, error } = useCurrentProfile();
 
-  const { register, handleSubmit, formState, getValues } =
-    useForm<IUpdateBackendProfile>({
-      defaultValues: {
-        ...user,
-        gender: user.type === 'moral' ? 'other' : user.gender,
-        probono:
-          user.probono === undefined
-            ? undefined
-            : user.probono === true
-              ? 'true'
-              : 'false',
-        birthday:
-          user.birthday !== undefined ? user.birthday?.slice(0, 10) : '',
-      },
-    });
+  const { register, handleSubmit, formState } = useForm<IUpdateBackendProfile>({
+    defaultValues: {
+      ...user,
+      gender: user?.type === 'moral' ? 'other' : user?.gender || 'other',
+      probono:
+        user?.probono !== undefined
+          ? user.probono === true
+            ? 'true'
+            : 'false'
+          : undefined,
+      birthday: user?.birthday !== undefined ? user.birthday?.slice(0, 10) : '',
+    },
+  });
 
   const onSubmit = useCallback(
     async (data: IUpdateBackendProfile) => {
@@ -91,7 +89,7 @@ function BasicInfo() {
               <Input
                 label={t('Nombre con el que quieres aparecer')}
                 type="text"
-                autoComplete={null}
+                autoComplete={undefined}
                 register={register}
                 fieldName="nickName"
                 divClass="col-span-full"

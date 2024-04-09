@@ -19,7 +19,7 @@ export interface IBackendProfile {
   gender?: 'male' | 'female' | 'other';
   headline?: string;
   headerPictureUrl?: string;
-  id?: string;
+  id: string;
   imdb?: string;
   instagram?: string;
   languages?: { lang: lang; proficiency: proficiency }[];
@@ -30,13 +30,13 @@ export interface IBackendProfile {
   phoneNumbers?: string[];
   postalCode?: string;
   primaryActivity?: string;
-  primaryEmail?: string;
+  primaryEmail: string;
   probono?: boolean;
   profilePictureUrl?: string;
   recommendations: UserDTO[];
-  recommendationsCount?: number;
+  recommendationsCount: number;
   remote?: boolean;
-  searchable?: string;
+  searchable: boolean;
   secondaryActivity?: string;
   secondaryEmails?: string[];
   state?: string;

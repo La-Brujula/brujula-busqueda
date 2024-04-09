@@ -15,8 +15,9 @@ export function useToggleRecommendation(profileId: string) {
       if (
         queryClient
           .getQueryData<IBackendProfile>(['profiles', profileId])
-          .recommendations.find((user) => user.primaryEmail == account.email) ==
-        undefined
+          ?.recommendations.find(
+            (user) => user.primaryEmail == account!.email
+          ) == undefined
       ) {
         return recommendProfile(profileId);
       } else {

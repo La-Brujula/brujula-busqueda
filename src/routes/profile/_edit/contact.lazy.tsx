@@ -54,7 +54,8 @@ function ContactPage() {
   const { register, handleSubmit, setValue } = useForm<ContactForm>({
     defaultValues: {
       ...user,
-      externalLinks: user.externalLinks[0],
+      externalLinks:
+        user?.externalLinks === undefined ? undefined : user?.externalLinks[0],
     },
   });
 
@@ -196,7 +197,7 @@ function ContactPage() {
             <StringArrayForm
               name="phoneNumbers"
               setValue={setValue}
-              defaultState={user.phoneNumbers}
+              defaultState={user!.phoneNumbers}
               inputType="tel"
               label={t('teléfono')}
             />
@@ -208,7 +209,7 @@ function ContactPage() {
             <StringArrayForm
               name="secondaryEmails"
               setValue={setValue}
-              defaultState={user.secondaryEmails}
+              defaultState={user!.secondaryEmails}
               inputType="email"
               label={t('correo')}
             />

@@ -18,10 +18,7 @@ export type IAuthResponse = {
   token: string;
 };
 
-export function loginService(
-  email: string,
-  password: string
-): Promise<BackendResponse<IAuthResponse>> {
+export function loginService(email: string, password: string) {
   return postFetch<IAuthResponse>('/auth/login', { email, password });
 }
 
@@ -43,10 +40,10 @@ export function resetPasswordService(email: string) {
 
 export function changePasswordService(
   email: string,
-  code: string,
-  password: string
+  password: string,
+  code: string
 ) {
-  return patchFetch<Account>('/auth/resetPassword', {
+  return patchFetch<IAuthResponse>('/auth/resetPassword', {
     email,
     code,
     password,

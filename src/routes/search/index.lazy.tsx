@@ -50,6 +50,7 @@ function SearchHomepage() {
 
   const onSubmit = (data: Search) =>
     navigate({
+      to: '/search',
       search: Object.fromEntries(
         Object.entries(data).filter(([_, value]) => !!value)
       ),

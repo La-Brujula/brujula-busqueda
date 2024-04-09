@@ -18,8 +18,8 @@ function useGlobalErrors({
 }) {
   const triggerError = (error: Error | AxiosError) => {
     let status = 500;
-    if (typeof error === typeof AxiosError) {
-      status = (error as AxiosError).response.status;
+    if (error instanceof AxiosError && error.response !== undefined) {
+      status = error.response.status || 500;
     }
 
     if (unauthorizedStatuses.includes(status)) {
@@ -55,7 +55,10 @@ function useGlobalErrors({
 }
 
 function QueryProvider({ children }: { children: ReactNode }) {
-  const { queryCache, mutationCache } = useGlobalErrors({});
+  const { logout } = useAuth(['logout']);
+  const { queryCache, mutationCache } = useGlobalErrors({
+    onAuthError: logout,
+  });
 
   const queryClient = useMemo(
     () =>

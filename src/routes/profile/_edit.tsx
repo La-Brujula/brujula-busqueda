@@ -16,7 +16,7 @@ export const Route = createFileRoute('/profile/_edit')({
     }
   },
   loader: ({ context: { queryClient } }) => {
-    const profileId = JSON.parse(localStorage.getItem('account')).ProfileId;
+    const profileId = JSON.parse(localStorage.getItem('account')!).ProfileId;
     queryClient.prefetchQuery(profileQueryOptions(profileId));
   },
 });

@@ -18,6 +18,8 @@ export const ProfileHeader = ({ user }: { user: IBackendProfile }) => {
     [account, user.primaryEmail]
   );
 
+  throw Error('probando');
+
   const activities = useMemo(
     () =>
       [user.primaryActivity, user.secondaryActivity, user.thirdActivity].map(
@@ -68,7 +70,7 @@ export const ProfileHeader = ({ user }: { user: IBackendProfile }) => {
           <UpdateImageControls
             setImageUrl={setHeaderPictureUrl}
             userSetPictureUrl={user.headerPictureUrl}
-            imageUrl={headerPictureUrl}
+            imageUrl={headerPictureUrl!}
             imageType="cover"
           />
         )}
@@ -97,7 +99,7 @@ export const ProfileHeader = ({ user }: { user: IBackendProfile }) => {
             <UpdateImageControls
               setImageUrl={setProfilePictureUrl}
               userSetPictureUrl={user.profilePictureUrl}
-              imageUrl={profilePictureUrl}
+              imageUrl={profilePictureUrl!}
               imageType="profile"
             />
           )}
@@ -134,8 +136,6 @@ function UpdateImageControls(props: {
   imageUrl: string;
   imageType: 'profile' | 'cover';
 }) {
-  console.log(props.userSetPictureUrl);
-
   const upload = useUploadProfileImage();
   const uploadImage = useCallback(async () => {
     const imageFile = await fetch(props.imageUrl)
@@ -148,14 +148,14 @@ function UpdateImageControls(props: {
     if (uploadRes.isSuccess) {
       props.setImageUrl(
         props.imageType == 'cover'
-          ? uploadRes.entity.headerPictureUrl
-          : uploadRes.entity.profilePictureUrl
+          ? uploadRes.entity.headerPictureUrl!
+          : uploadRes.entity.profilePictureUrl!
       );
     }
   }, [upload]);
 
   const resetInput = useCallback(
-    () => props.setImageUrl(props.userSetPictureUrl),
+    () => props.setImageUrl(props.userSetPictureUrl!),
     [props.setImageUrl]
   );
   return (
@@ -175,7 +175,7 @@ function UpdateImageControls(props: {
           </button>
           <button
             onClick={uploadImage}
-            className="p-2 rounded-md bg-emerald-500 text-white"
+            className="p-2 rounded-md bg-green-500 text-white"
           >
             <SaveOutlined />
           </button>

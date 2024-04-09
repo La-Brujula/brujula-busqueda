@@ -9,8 +9,6 @@
   "Volver a lista": "Volver a lista",
   "Borrar": "Borrar",
   "Agregar otro idioma": "Agregar otro idioma",
-  "No se encontró una cuenta con ese correo y contraseña": "No se encontró una cuenta con ese correo y contraseña.",
-  "Ocurrió un error": "Ocurrió un error.",
   "email": "Correo electrónico",
   "ejemplo@labrujula": {
     "com": "ejemplo@labrujula.com"
@@ -19,7 +17,6 @@
   "Inicia sesión": "Inicia sesión",
   "createUser": "Crear un nuevo usuario",
   "forgotPassword": "¿Olvidaste tu contraseña?",
-  "No has especificado qué tipo de perfil quieres crear": "No has especificado qué tipo de perfil quieres crear.",
   "Tu correo electrónico será tu nombre de usuario": "Tu correo electrónico será tu nombre de usuario",
   "Escribe una contraseña": "Escribe una contraseña",
   "¿Eres persona física o persona moral?": "¿Eres persona física o persona moral?",
@@ -32,10 +29,12 @@
   "Seleccione una opción": "Seleccione una opción",
   "login": "Iniciar sesión",
   "logout": "Cerrar sesión",
-  "No tenemos registrada esta cuenta, por favor revisa tu información": "No tenemos registrada esta cuenta, por favor revisa tu información.",
-  "No hay una cuenta registrada con ese correo, por favor revisa tu información": "No hay una cuenta registrada con ese correo, por favor revisa tu información.",
+  "Las contraseñas no coinciden": "Las contraseñas no coinciden",
   "Reiniciar contraseña": "Reiniciar contraseña",
   "Escribe tu correo aquí y si está registrado te llegará un correo para reiniciar tu contraseña": "Escribe tu correo aquí y si está registrado te llegará un correo para reiniciar tu contraseña",
+  "passwordConfirm": "Confirmar contraseña",
+  "Cambiar contraseña": "Cambiar contraseña",
+  "Algo está mal aquí, por favor intenta de nuevo": "Algo está mal aquí, por favor intenta de nuevo",
   "Enviar Correo": "Enviar Correo",
   "Se ha enviado el correo con el link para reiniciar tu contraseña": "Se ha enviado el correo con el link para reiniciar tu contraseña",
   "Iniciar Sesión": "Iniciar Sesión",
@@ -99,5 +98,9 @@
   "No user could be found": "No user could be found",
   "Nombre": "Nombre",
   "Nickname": "Apodo",
-  "Actividad Principal": "Actividad Principal"
+  "Actividad Principal": "Actividad Principal",
+  "No se encontró una cuenta con ese correo y contraseña": "No se encontró una cuenta con ese correo y contraseña.",
+  "Ocurrió un error": "Ocurrió un error.",
+  "No has especificado qué tipo de perfil quieres crear": "No has especificado qué tipo de perfil quieres crear.",
+  "Las contraseñas no son iguales": "Las contraseñas no son iguales"
 }

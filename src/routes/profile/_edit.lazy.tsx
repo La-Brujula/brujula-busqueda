@@ -26,7 +26,7 @@ function BaseStepPage() {
     >
       <Container>
         <div className="max-w-3xl mx-auto">
-          <ProfileBadge user={user} />
+          <ProfileBadge user={user!} />
           <div className="mb-8"></div>
           <Outlet />
         </div>

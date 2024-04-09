@@ -41,7 +41,7 @@ export const Navbar = () => {
           ) : (
             <Link
               to="/profile/$userId"
-              params={{ userId: account.ProfileId }}
+              params={{ userId: account!.ProfileId }}
               className="text-white order-last"
             >
               <PersonOutline />
@@ -120,7 +120,7 @@ export const Navbar = () => {
               <Link
                 onClick={() => toggleOpen()}
                 to="/profile/$userId"
-                params={{ userId: account.ProfileId }}
+                params={{ userId: account!.ProfileId }}
                 className="font-bold leading-relaxed text-white"
               >
                 {t('myUser')}

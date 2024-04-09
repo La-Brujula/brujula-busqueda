@@ -69,7 +69,12 @@ export function getSubAreaObjectByName(
   area: keyof typeof areas,
   subareaName: string
 ) {
-  return areas[area][subareaName];
+  const areaObj = areas[area] as Record<string, any>;
+  const subareaObj = areaObj[subareaName];
+  if (subareaObj === undefined) {
+    throw Error('Subarea not found in area');
+  }
+  return subareaObj;
 }
 
 export function getSubAreaObject(

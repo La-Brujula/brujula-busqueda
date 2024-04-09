@@ -47,11 +47,11 @@ export const AreaForms = ({
     );
   };
   const resetActivity = useCallback(() => {
-    setValue('activity', undefined);
+    setValue('activity', '');
   }, [setValue]);
 
   const resetOthers = useCallback(() => {
-    setValue('subarea', undefined);
+    setValue('subarea', '');
     resetActivity();
   }, [setValue, resetActivity]);
 

@@ -1,12 +1,9 @@
-import React, {
-  HTMLInputTypeAttribute,
-  ReactNode,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { HTMLInputTypeAttribute, useMemo } from 'react';
 import {
+  FieldError,
   FieldValues,
   Path,
+  RegisterOptions,
   UseFormRegister,
   UseFormRegisterReturn,
 } from 'react-hook-form';
@@ -27,41 +24,47 @@ type InputProps<
   divClass?: string;
   labelClass?: string;
   required?: boolean;
-} & (Type extends 'textArea'
-  ? {
-      type: 'textArea';
-      rows?: number;
-      maxLength: number;
-    }
-  : Type extends 'select'
+  error?: FieldError;
+} & RegisterOptions &
+  (Type extends 'textArea'
     ? {
-        type: 'select';
-        items: { key: string; label: string }[];
+        type: 'textArea';
+        rows?: number;
+        maxLength: number;
       }
-    : Type extends 'groupedSelect'
+    : Type extends 'select'
       ? {
-          type: 'groupedSelect';
-          groupedItems: { [k: string]: { key: string; label: string }[] };
+          type: 'select';
+          items: { key: string; label: string }[];
         }
-      : Type extends 'custom'
+      : Type extends 'groupedSelect'
         ? {
-            type: 'custom';
-            component: React.FunctionComponent<{
-              register: UseFormRegister<FormFields>;
-              fieldName: Path<FormFields>;
-            }>;
-            [k: string]: any;
+            type: 'groupedSelect';
+            groupedItems: { [k: string]: { key: string; label: string }[] };
           }
-        : Type extends HTMLInputTypeAttribute
-          ? {
-              maxLength?: number;
-              type: HTMLInputTypeAttribute;
-              autoComplete?: string;
-            } & React.DetailedHTMLProps<
-              React.InputHTMLAttributes<HTMLInputElement>,
-              HTMLInputElement
-            >
-          : {});
+        : Type extends 'custom'
+          ?
+              | {
+                  type: 'custom';
+                  component: React.FunctionComponent<
+                    | {
+                        register: UseFormRegister<FormFields>;
+                        fieldName: Path<FormFields>;
+                      }
+                    | { [k: string]: any }
+                  >;
+                }
+              | { [k: string]: any }
+          : Type extends HTMLInputTypeAttribute
+            ? {
+                maxLength?: number;
+                type: HTMLInputTypeAttribute;
+                autoComplete?: string;
+              } & React.DetailedHTMLProps<
+                React.InputHTMLAttributes<HTMLInputElement>,
+                HTMLInputElement
+              >
+            : {});
 
 const internalProps = [
   'label',
@@ -145,11 +148,11 @@ function buildTextArea<T extends FieldValues>(
 ) {
   return (
     <textarea
-      {...registerReturn}
       id={props.fieldName}
       className={props.inputClass}
       rows={props.rows || 3}
       required={props.required}
+      {...registerReturn}
     />
   );
 }
@@ -180,7 +183,7 @@ function Input<T extends FieldValues>(
     | InputProps<HTMLInputTypeAttribute, T>
 ) {
   const registerReturn = useMemo(
-    () => props.register(props.fieldName, { required: props.required }),
+    () => props.register(props.fieldName, props),
     [props]
   );
   const inputElement = useMemo(() => {
@@ -201,7 +204,10 @@ function Input<T extends FieldValues>(
         const CustomElement = (props as InputProps<'custom', T>).component;
         return <CustomElement {...props} />;
       default:
-        return buildInput(props, registerReturn);
+        return buildInput(
+          props as InputProps<HTMLInputTypeAttribute, T>,
+          registerReturn
+        );
     }
   }, [props]);
 
@@ -217,6 +223,9 @@ function Input<T extends FieldValues>(
         {props.required && ' *'}
       </label>
       {inputElement}
+      {props.error !== undefined && (
+        <p className="text-red-500 font-bold">{props.error.message}</p>
+      )}
     </div>
   );
 }

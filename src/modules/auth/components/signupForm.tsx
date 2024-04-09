@@ -1,11 +1,16 @@
 import { useCallback, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Path, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LoadingSpinner } from '@shared/components/loadingSpinner';
 import { PrivacyPolicy } from './privacyPolicy';
 import { useAuth } from '@/shared/providers/authProvider';
 import { Link, useNavigate } from '@tanstack/react-router';
 import { signUpService } from '@/shared/services/authServices';
+import useAuthFunction from '@/shared/hooks/useAuthFuncton';
+import { ErrorMessage } from '@/shared/components/errorMessage';
+import Input from '@/shared/components/input';
+import { ButtonSelect } from '@/shared/components/buttonSelect';
+import { isApiError } from '@/shared/services/backendFetcher';
 
 type SignupForm = {
   email: string;
@@ -16,37 +21,43 @@ type SignupForm = {
 
 export const SignUpForm = () => {
   const { signup } = useAuth(['signup']);
-  const { register, handleSubmit, setValue, watch } = useForm<SignupForm>();
-  const tipoDePersona = watch('persona');
+  const { register, handleSubmit, watch, formState, setError } =
+    useForm<SignupForm>();
   const { t } = useTranslation('auth');
   const acceptedPrivacy = watch('acceptPrivacy');
-  const [errorMsg, setErrorMsg] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { isPending: loading, error, mutate } = useAuthFunction(signup);
   const navigate = useNavigate();
 
   const onSubmit = async (data: SignupForm) => {
     if (loading) return;
     if (!data.email || !data.password) return;
-    setLoading(true);
-    setErrorMsg('');
-    signup(data.email, data.password, data.persona)
-      .catch((err) => setErrorMsg(err.message))
-      .then(() => navigate({ to: '/profile/edit/basic' }))
-      .finally(() => setLoading(false));
+    mutate(
+      { email: data.email, password: data.password, type: data.persona },
+      {
+        onError: (err) => {
+          if (
+            isApiError(err) &&
+            err.errorCode === 'SE01' &&
+            typeof err.message !== 'string'
+          ) {
+            for (const error of err.message) {
+              setError(error.path as Path<SignupForm>, {
+                type: 'custom',
+                message: error.msg,
+              });
+            }
+          }
+        },
+        onSuccess: () => {
+          navigate({ to: '/profile/edit/basic' });
+        },
+      }
+    );
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit, (err) => {
-        console.error(err);
-        if (err.persona?.type == 'required') {
-          setErrorMsg(
-            t('No has especificado qué tipo de perfil quieres crear.')
-          );
-        } else {
-          setErrorMsg(Object.keys(err).join(' '));
-        }
-      })}
+      onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-4"
     >
       <input
@@ -55,103 +66,53 @@ export const SignUpForm = () => {
         required
       />
       <div className="flex flex-col md:items-center gap-8 justify-stretch mb-12">
-        <div className="flex flex-col gap-2 items-start grow max-w-xs w-full">
-          <label
-            htmlFor="email"
-            className="block"
-          >
-            {t('Tu correo electrónico será tu nombre de usuario')}
-          </label>
-          <input
-            id="email"
-            type="email"
-            placeholder={t('email')}
-            autoComplete="email"
-            className="w-full"
-            {...register('email')}
-            required
-          />
-        </div>
-        <div className="flex flex-col gap-2 items-start grow max-w-xs w-full">
-          <label htmlFor="password">{t('Escribe una contraseña')}</label>
-          <input
-            id="password"
-            type="password"
-            placeholder={t('password')}
-            autoComplete="password"
-            className="w-full"
-            {...register('password')}
-            required
-          />
-        </div>
-      </div>
-      <div className="flex flex-col gap-4">
-        <label>{t('¿Eres persona física o persona moral?')}</label>
-        <div
-          className={[
-            'flex flex-row gap-4 items-center justify-center mb-4',
-          ].join(' ')}
-        >
-          <button
-            className={[
-              'outline outline-primary outline-1 px-8 py-4 rounded-lg cursor-pointer',
-              tipoDePersona == 'fisica'
-                ? '!bg-primary !text-white !outline-primary'
-                : 'bg-transparent text-primary',
-              errorMsg ==
-                'No has especificado qué tipo de perfil quieres crear.' &&
-                'outline-red-500 text-red-500',
-            ].join(' ')}
-            onClick={(ev) => {
-              setValue('persona', 'fisica', {
-                shouldDirty: true,
-                shouldTouch: true,
-                shouldValidate: true,
-              });
-              ev.preventDefault();
-            }}
-          >
-            {t('Persona física')}
-          </button>
-          <button
-            className={[
-              'outline outline-primary outline-1 px-8 py-4 rounded-lg cursor-pointer',
-              tipoDePersona == 'moral'
-                ? '!bg-primary !text-white !outline-primary'
-                : 'bg-transparent text-primary',
-              errorMsg ==
-                'No has especificado qué tipo de perfil quieres crear.' &&
-                'outline-red-500 text-red-500',
-            ].join(' ')}
-            onClick={(ev) => {
-              setValue('persona', 'moral', {
-                shouldDirty: true,
-                shouldTouch: true,
-                shouldValidate: true,
-              });
-              ev.preventDefault();
-            }}
-          >
-            {t('Persona moral')}
-          </button>
-        </div>
-        <input
-          type="hidden"
-          required
-          {...register('persona', { required: true })}
+        <Input
+          label={t('Tu correo electrónico será tu nombre de usuario')}
+          type="email"
+          fieldName="email"
+          placeholder={t('email')}
+          autoComplete="email"
+          register={register}
+          required={true}
+          divClass="flex flex-col gap-2 items-start grow max-w-xs w-full"
+          error={formState.errors.email}
+        />
+        <Input
+          label={t('Escribe una contraseña')}
+          type="password"
+          fieldName="password"
+          placeholder={t('password')}
+          autoComplete="password"
+          register={register}
+          required={true}
+          divClass="flex flex-col gap-2 items-start grow max-w-xs w-full"
+          error={formState.errors.password}
         />
       </div>
-      {errorMsg === '' ? <></> : <p style={{ color: 'red' }}>{errorMsg}</p>}
-      {acceptedPrivacy !== true && <PrivacyPolicy />}
-      {!loading ? (
-        <input
-          type="submit"
-          className="max-w-xs mx-auto bg-primary"
-          value={t('Crear usuario')}
+      <Input
+        label={t('¿Eres persona física o persona moral?')}
+        register={register}
+        fieldName="persona"
+        type="custom"
+        component={ButtonSelect<SignupForm>}
+        items={[
+          { value: 'fisica', label: t('Persona física') },
+          { value: 'moral', label: t('Persona moral') },
+        ]}
+        error={formState.errors.persona}
+      />
+      {error !== null && (
+        <ErrorMessage
+          message={isApiError(error) ? error.errorCode : error.message}
         />
-      ) : (
-        <LoadingSpinner />
       )}
+      {acceptedPrivacy !== true && <PrivacyPolicy />}
+      <input
+        disabled={loading || !formState.isValid}
+        type="submit"
+        className="max-w-xs mx-auto bg-primary"
+        value={t('Crear usuario')}
+      />
       <p>
         {t('¿Ya tienes una cuenta?')}&nbsp;
         <Link

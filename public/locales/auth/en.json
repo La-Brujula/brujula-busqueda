@@ -9,8 +9,6 @@
   "Volver a lista": "TODO",
   "Borrar": "TODO",
   "Agregar otro idioma": "TODO",
-  "No se encontró una cuenta con ese correo y contraseña": "TODO",
-  "Ocurrió un error": "TODO",
   "email": "TODO",
   "ejemplo@labrujula": {
     "com": "TODO"
@@ -19,7 +17,6 @@
   "Inicia sesión": "TODO",
   "createUser": "Create a new user",
   "forgotPassword": "Forgot your password?",
-  "No has especificado qué tipo de perfil quieres crear": "TODO",
   "Tu correo electrónico será tu nombre de usuario": "TODO",
   "Escribe una contraseña": "TODO",
   "¿Eres persona física o persona moral?": "TODO",
@@ -32,10 +29,12 @@
   "Seleccione una opción": "TODO",
   "login": "TODO",
   "logout": "TODO",
-  "No tenemos registrada esta cuenta, por favor revisa tu información": "TODO",
-  "No hay una cuenta registrada con ese correo, por favor revisa tu información": "TODO",
+  "Las contraseñas no coinciden": "TODO",
   "Reiniciar contraseña": "TODO",
   "Escribe tu correo aquí y si está registrado te llegará un correo para reiniciar tu contraseña": "TODO",
+  "passwordConfirm": "TODO",
+  "Cambiar contraseña": "TODO",
+  "Algo está mal aquí, por favor intenta de nuevo": "TODO",
   "Enviar Correo": "TODO",
   "Se ha enviado el correo con el link para reiniciar tu contraseña": "TODO",
   "Iniciar Sesión": "TODO",
@@ -99,5 +98,9 @@
   "No user could be found": "TODO",
   "Nombre": "TODO",
   "Nickname": "TODO",
-  "Actividad Principal": "TODO"
+  "Actividad Principal": "TODO",
+  "No se encontró una cuenta con ese correo y contraseña": "TODO",
+  "Ocurrió un error": "TODO",
+  "No has especificado qué tipo de perfil quieres crear": "TODO",
+  "Las contraseñas no son iguales": "TODO"
 }

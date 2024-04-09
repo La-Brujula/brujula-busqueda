@@ -96,7 +96,7 @@ export function StringArrayForm<T extends FieldValues>(props: {
     if (props.defaultState === null) return;
     dispatch({
       type: 'rebase',
-      state: props.defaultState.map((v: string) => ({
+      state: props.defaultState?.map((v: string) => ({
         id: Math.random(),
         value: v,
       })),

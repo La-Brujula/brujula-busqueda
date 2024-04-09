@@ -1,8 +1,8 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react';
-import PropTypes from 'prop-types';
 import {
   Account,
   IAuthResponse,
+  changePasswordService,
   loginService,
   resetPasswordService,
   signUpService,
@@ -14,33 +14,41 @@ import { createContext, useContextSelector } from 'use-context-selector';
 interface IAuthContext {
   account: Account | null;
   token: string | null;
-  login: (email: string, password: string) => Promise<IAuthResponse>;
+  login: (authValues: {
+    email: string;
+    password: string;
+  }) => Promise<IAuthResponse>;
   logout: () => Promise<any>;
-  signup: (
-    email: string,
-    password: string,
-    type: UserType
-  ) => Promise<IAuthResponse>;
+  signup: (authValues: {
+    email: string;
+    password: string;
+    type: UserType;
+  }) => Promise<IAuthResponse>;
   isLoggedIn: boolean;
-  resetUserPassword: (email: string) => Promise<IAuthResponse>;
+  sendPasswordReset: (authValues: { email: string }) => Promise<undefined>;
+  changeUserPassword: (authValues: {
+    email: string;
+    password: string;
+    code: string;
+  }) => Promise<IAuthResponse>;
 }
 
 const AuthContext = createContext<IAuthContext>({} as IAuthContext);
 
 export function UserProvider(props: { children: ReactNode }) {
   const [account, setAccount] = useState<Account | null>(
-    JSON.parse(localStorage.getItem('account') || '{}') as Account
+    JSON.parse(localStorage.getItem('account') || 'null')
   );
   const [token, setToken] = useState<string | null>(
-    JSON.parse(localStorage.getItem('jwt')) || ''
+    JSON.parse(localStorage.getItem('jwt') || 'null') || ''
   );
 
   const login = useCallback(
-    async (email: string, password: string): Promise<IAuthResponse> => {
-      const res = await loginService(email, password);
-      if (res.isSuccess === false) {
-        throw res.error.message;
-      }
+    async (authValues: {
+      email: string;
+      password: string;
+    }): Promise<IAuthResponse> => {
+      const res = await loginService(authValues.email, authValues.password);
       setAccount(res.entity.account);
       setToken(res.entity.token);
       return res.entity;
@@ -49,12 +57,16 @@ export function UserProvider(props: { children: ReactNode }) {
   );
 
   const signup = useCallback(
-    async (
-      email: string,
-      password: string,
-      type: 'moral' | 'fisica'
-    ): Promise<IAuthResponse> => {
-      const res = await signUpService(email, password, type);
+    async (authValues: {
+      email: string;
+      password: string;
+      type: 'moral' | 'fisica';
+    }): Promise<IAuthResponse> => {
+      const res = await signUpService(
+        authValues.email,
+        authValues.password,
+        authValues.type
+      );
       setAccount(res.entity.account);
       setToken(res.entity.token);
       return res.entity;
@@ -78,12 +90,27 @@ export function UserProvider(props: { children: ReactNode }) {
     localStorage.setItem('jwt', JSON.stringify(token));
   }, [token]);
 
-  const isLoggedIn = token?.length > 0;
+  const isLoggedIn = token !== null && account !== null;
 
-  const resetUserPassword = useCallback(async (email: string) => {
-    const res = await resetPasswordService(email);
-    return res.entity;
-  }, []);
+  const sendPasswordReset = useCallback(
+    async (authValues: { email: string }) => {
+      const res = await resetPasswordService(authValues.email);
+      return res.entity;
+    },
+    []
+  );
+
+  const changeUserPassword = useCallback(
+    async (authValues: { email: string; password: string; code: string }) => {
+      const res = await changePasswordService(
+        authValues.email,
+        authValues.password,
+        authValues.code
+      );
+      return res.entity;
+    },
+    []
+  );
 
   const providerValue = useMemo(
     () => ({
@@ -93,9 +120,19 @@ export function UserProvider(props: { children: ReactNode }) {
       logout,
       signup,
       isLoggedIn,
-      resetUserPassword,
+      sendPasswordReset,
+      changeUserPassword,
     }),
-    [account, token, login, logout, signup, isLoggedIn, resetUserPassword]
+    [
+      account,
+      token,
+      login,
+      logout,
+      signup,
+      isLoggedIn,
+      sendPasswordReset,
+      changeUserPassword,
+    ]
   );
 
   return (
@@ -104,10 +141,6 @@ export function UserProvider(props: { children: ReactNode }) {
     </AuthContext.Provider>
   );
 }
-
-UserProvider.propTypes = {
-  children: PropTypes.node,
-};
 
 export function useAuth(propertyList: (keyof IAuthContext)[]): IAuthContext {
   return useContextSelector(AuthContext, (v) =>

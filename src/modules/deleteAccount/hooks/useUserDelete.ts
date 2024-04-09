@@ -16,7 +16,7 @@ export function useDeleteMyUser() {
           `Estás a punto de borrar tu cuenta {{email}}, esto no se puede deshacer.
         
         ¿Quieres continuar?`,
-          { replace: { email: account.email } }
+          { replace: { email: account!.email } }
         )
       )
     ) {

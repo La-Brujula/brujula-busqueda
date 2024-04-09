@@ -51,7 +51,7 @@ function ProfileSummary() {
           <>
             <h3>{t('Género')}</h3>
             <p className="text-left text-primary">
-              {t(user?.gender, { ns: 'genders' })}
+              {t(user!.gender || 'other', { ns: 'genders' })}
             </p>
           </>
         )}
@@ -68,17 +68,22 @@ function ProfileSummary() {
         <p className="text-left text-primary">{user?.state}</p>
         <h3>{t('País')}</h3>
         <p className="text-left text-primary">
-          {t(user?.country, { ns: 'countries' })}
+          {t(user?.country || 'MX', { ns: 'countries' })}
         </p>
-        <h3>
-          <PhoneOutlined />
-        </h3>
-        <a
-          href={`tel:${user?.phoneNumbers[0]}`}
-          className="text-left text-primary underline"
-        >
-          {user?.phoneNumbers[0]}
-        </a>
+        {user?.phoneNumbers?.map((tel) => (
+          <div className="grid grid-cols-subgrid col-span-full">
+            <h3>
+              <PhoneOutlined />
+            </h3>
+            <a
+              href={`tel:${tel}`}
+              className="text-left text-primary underline"
+              key={tel}
+            >
+              {tel}
+            </a>
+          </div>
+        ))}
       </div>
       <div className="flex flex-row gap-4 self-center justify-center my-8">
         <Link to="/profile/edit/stand-out">

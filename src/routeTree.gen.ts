@@ -17,6 +17,7 @@ import { Route as SearchIndexImport } from './routes/search/index';
 import { Route as SearchLabelImport } from './routes/search/$label';
 import { Route as ProfileEditImport } from './routes/profile/_edit';
 import { Route as ProfileUserIdImport } from './routes/profile/$userId';
+import { Route as AuthNewPasswordImport } from './routes/auth/new-password';
 
 // Create Virtual Routes
 
@@ -26,7 +27,7 @@ const ContactIndexLazyImport = createFileRoute('/contact/')();
 const AboutIndexLazyImport = createFileRoute('/about/')();
 const SearchCategoryLazyImport = createFileRoute('/search/category')();
 const AuthSignupLazyImport = createFileRoute('/auth/signup')();
-const AuthPasswordResetLazyImport = createFileRoute('/auth/passwordReset')();
+const AuthResetPasswordLazyImport = createFileRoute('/auth/reset-password')();
 const AuthLogoutLazyImport = createFileRoute('/auth/logout')();
 const AuthLoginLazyImport = createFileRoute('/auth/login')();
 const AuthDeleteAccountLazyImport = createFileRoute('/auth/delete-account')();
@@ -35,9 +36,6 @@ const ProfileEditSummaryLazyImport = createFileRoute(
 )();
 const ProfileEditStandOutLazyImport = createFileRoute(
   '/profile/_edit/stand-out'
-)();
-const ProfileEditPasswordResetLazyImport = createFileRoute(
-  '/profile/_edit/passwordReset'
 )();
 const ProfileEditContactLazyImport = createFileRoute(
   '/profile/_edit/contact'
@@ -89,11 +87,11 @@ const AuthSignupLazyRoute = AuthSignupLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/signup.lazy').then((d) => d.Route));
 
-const AuthPasswordResetLazyRoute = AuthPasswordResetLazyImport.update({
-  path: '/auth/passwordReset',
+const AuthResetPasswordLazyRoute = AuthResetPasswordLazyImport.update({
+  path: '/auth/reset-password',
   getParentRoute: () => rootRoute,
 } as any).lazy(() =>
-  import('./routes/auth/passwordReset.lazy').then((d) => d.Route)
+  import('./routes/auth/reset-password.lazy').then((d) => d.Route)
 );
 
 const AuthLogoutLazyRoute = AuthLogoutLazyImport.update({
@@ -134,6 +132,13 @@ const ProfileUserIdRoute = ProfileUserIdImport.update({
   import('./routes/profile/$userId.lazy').then((d) => d.Route)
 );
 
+const AuthNewPasswordRoute = AuthNewPasswordImport.update({
+  path: '/auth/new-password',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/auth/new-password.lazy').then((d) => d.Route)
+);
+
 const ProfileEditSummaryLazyRoute = ProfileEditSummaryLazyImport.update({
   path: '/summary',
   getParentRoute: () => ProfileEditRoute,
@@ -147,14 +152,6 @@ const ProfileEditStandOutLazyRoute = ProfileEditStandOutLazyImport.update({
 } as any).lazy(() =>
   import('./routes/profile/_edit/stand-out.lazy').then((d) => d.Route)
 );
-
-const ProfileEditPasswordResetLazyRoute =
-  ProfileEditPasswordResetLazyImport.update({
-    path: '/passwordReset',
-    getParentRoute: () => ProfileEditRoute,
-  } as any).lazy(() =>
-    import('./routes/profile/_edit/passwordReset.lazy').then((d) => d.Route)
-  );
 
 const ProfileEditContactLazyRoute = ProfileEditContactLazyImport.update({
   path: '/contact',
@@ -193,6 +190,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport;
       parentRoute: typeof rootRoute;
     };
+    '/auth/new-password': {
+      preLoaderRoute: typeof AuthNewPasswordImport;
+      parentRoute: typeof rootRoute;
+    };
     '/profile/$userId': {
       preLoaderRoute: typeof ProfileUserIdImport;
       parentRoute: typeof rootRoute;
@@ -217,8 +218,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLogoutLazyImport;
       parentRoute: typeof rootRoute;
     };
-    '/auth/passwordReset': {
-      preLoaderRoute: typeof AuthPasswordResetLazyImport;
+    '/auth/reset-password': {
+      preLoaderRoute: typeof AuthResetPasswordLazyImport;
       parentRoute: typeof rootRoute;
     };
     '/auth/signup': {
@@ -261,10 +262,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileEditContactLazyImport;
       parentRoute: typeof ProfileEditImport;
     };
-    '/profile/_edit/passwordReset': {
-      preLoaderRoute: typeof ProfileEditPasswordResetLazyImport;
-      parentRoute: typeof ProfileEditImport;
-    };
     '/profile/_edit/stand-out': {
       preLoaderRoute: typeof ProfileEditStandOutLazyImport;
       parentRoute: typeof ProfileEditImport;
@@ -280,13 +277,13 @@ declare module '@tanstack/react-router' {
 
 export const routeTree = rootRoute.addChildren([
   IndexLazyRoute,
+  AuthNewPasswordRoute,
   ProfileUserIdRoute,
   ProfileEditRoute.addChildren([
     ProfileEditAreasLazyRoute,
     ProfileEditBasicLazyRoute,
     ProfileEditCharacteristicsLazyRoute,
     ProfileEditContactLazyRoute,
-    ProfileEditPasswordResetLazyRoute,
     ProfileEditStandOutLazyRoute,
     ProfileEditSummaryLazyRoute,
   ]),
@@ -294,7 +291,7 @@ export const routeTree = rootRoute.addChildren([
   AuthDeleteAccountLazyRoute,
   AuthLoginLazyRoute,
   AuthLogoutLazyRoute,
-  AuthPasswordResetLazyRoute,
+  AuthResetPasswordLazyRoute,
   AuthSignupLazyRoute,
   SearchCategoryLazyRoute,
   SearchIndexRoute,

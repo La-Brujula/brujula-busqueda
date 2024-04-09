@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { LanguageListForm } from '../../../modules/auth/components/languageListForm';
@@ -35,12 +35,16 @@ function CharacteristicsPage() {
 
   const { mutate, isPending, error: mutateError } = useUpdateMe();
 
-  const onSubmit = async (data: IUpdateBackendProfile) => {
-    mutate(data, {
-      onSuccess: () =>
-        navigate({ to: '/profile/$userId', params: { userId: user.id } }),
-    });
-  };
+  const onSubmit = useCallback(
+    async (data: IUpdateBackendProfile) => {
+      if (user === undefined) throw Error('User is not loaded');
+      mutate(data, {
+        onSuccess: () =>
+          navigate({ to: '/profile/$userId', params: { userId: user!.id } }),
+      });
+    },
+    [mutate, navigate, user]
+  );
 
   return (
     <DataSuspense
@@ -131,7 +135,7 @@ function CharacteristicsPage() {
           <input
             type="submit"
             className="border-none"
-            disabled={isPending || !formState.isValid}
+            disabled={user === undefined || isPending || !formState.isValid}
             value={t('Finalizar')}
           />
         </div>

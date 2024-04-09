@@ -1,11 +1,23 @@
 import { Trans, useTranslation } from 'react-i18next';
 import { Container } from '../layout/container';
-import { Link, useNavigate, useRouter } from '@tanstack/react-router';
+import { ErrorComponentProps, useRouter } from '@tanstack/react-router';
+import useReportError from '../hooks/useSendBugReport';
+import { useMemo } from 'react';
 
-function ErrorHandler({ error }) {
+function ErrorHandler(props: ErrorComponentProps) {
   const { t } = useTranslation();
   const { history } = useRouter();
-  const navigate = useNavigate();
+  const { mutate, error, isSuccess } = useReportError();
+
+  useMemo(() => {
+    const error = props.error as Error;
+    mutate({
+      pathname: window.location.pathname,
+      name: error.name,
+      stack: error.stack || '',
+      message: error.message,
+    });
+  }, [props.error]);
 
   return (
     <Container
@@ -45,38 +57,59 @@ function ErrorHandler({ error }) {
           </div>
         </div>
         <div className="flex flex-col gap-0 text-left shadow-lg border border-white rounded-md overflow-hidden border-opacity-25">
-          <p className="bg-primary p-4">
-            <Trans
-              i18nKey="errorDescription"
-              t={t}
-            >
-              Si gustas ayudarnos a mejorar, puedes mandarnos una captura de
-              pantalla con la siguiente información:
-            </Trans>
-          </p>
-          <div className="p-4 bg-secondary text-sm flex flex-col gap-8">
-            <b>{location.pathname}</b>
+          {error !== undefined && (
+            <>
+              <p className="bg-primary p-4">
+                <Trans
+                  i18nKey="errorDescription"
+                  t={t}
+                >
+                  Si gustas ayudarnos a mejorar, puedes mandarnos una captura de
+                  pantalla con la siguiente información:
+                </Trans>
+              </p>
+              <div className="p-4 bg-secondary text-sm flex flex-col gap-8">
+                <b>{location.pathname}</b>
 
-            <div className="flex flex-col gap-2">
-              <div className="flex flex-col">
-                <span className="text-base">{error.name}</span>
-                <span className="text-sm">{error.message}</span>
-              </div>
-              {error.stack?.split('\n').flatMap((line: string) => {
-                const [func, loc] = line.split('@');
-                if (loc.includes('node_modules')) return;
-                return (
-                  <div
-                    className="flex flex-col"
-                    key={loc}
-                  >
-                    <b>{func}</b>
-                    <span>{loc}</span>
+                <div className="flex flex-col gap-2">
+                  <div className="flex flex-col">
+                    <span className="text-base">
+                      {(props.error as Error).name}
+                    </span>
+                    <span className="text-sm">
+                      {(props.error as Error).message}
+                    </span>
                   </div>
-                );
-              })}
-            </div>
-          </div>
+                  {(props.error as Error).stack
+                    ?.split('\n')
+                    .flatMap((line: string) => {
+                      const [func, loc] = line.split('@');
+                      if (loc.includes('node_modules')) return;
+                      return (
+                        <div
+                          className="flex flex-col"
+                          key={loc}
+                        >
+                          <b>{func}</b>
+                          <span>{loc}</span>
+                        </div>
+                      );
+                    })}
+                </div>
+              </div>
+            </>
+          )}
+          {isSuccess && (
+            <p className="bg-primary p-4">
+              <Trans
+                i18nKey="reportSent"
+                t={t}
+              >
+                No te preocupes, ya le avisamos a nuestro equipo para mejorar tu
+                experiencia
+              </Trans>
+            </p>
+          )}
         </div>
       </div>
     </Container>

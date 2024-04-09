@@ -50,11 +50,11 @@ export function UserProfilePage() {
       loading={loading}
       error={error}
     >
-      <ProfileHeader user={user} />
+      <ProfileHeader user={user!} />
       <div className="max-w-lg xl:max-w-4xl mx-auto px-8 w-full justify-start items-start mb-4">
         <div className="flex flex-col xl:flex-row xl:gap-16 order-last xl:order-first xl:shrink">
           <div className="flex flex-col gap-4 justify-items-stretch mt-8 max-w-sm w-full mx-auto text-left">
-            <ContactSection user={user} />
+            <ContactSection user={user!} />
             {!!user?.university && user.type != 'moral' && (
               <div className="py-8">
                 <div className="absolute left-0 -z-10 -my-4 overflow-hidden transform w-full">
@@ -80,7 +80,7 @@ export function UserProfilePage() {
             className="flex flex-col gap-6 w-full justify-items-stretch mt-8 max-w-lg
           xl:max-w-3xl mx-auto xl:mx-0 text-left xl:-translate-y-42"
           >
-            <Recommendations user={user} />
+            <Recommendations user={user!} />
             {!!user?.biography && (
               <div>
                 <h4 className="font-normal text-primary">{t('Semblanza')}</h4>

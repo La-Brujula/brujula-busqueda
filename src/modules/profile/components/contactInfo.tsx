@@ -42,31 +42,33 @@ export const ContactSection = ({ user }: { user: IBackendProfile }) => {
             </div>
           </div>
         ))}
-      {[
-        user.type != 'moral'
-          ? user.primaryEmail
-          : !user.secondaryEmails && user.primaryEmail,
-        user.secondaryEmails,
-      ]
+      {(user.type != 'moral'
+        ? [user.primaryEmail, user.secondaryEmails]
+        : user.secondaryEmails !== undefined &&
+            user.secondaryEmails[0] !== undefined
+          ? user.secondaryEmails
+          : [user.primaryEmail]
+      )
         .flat()
-        .filter((email) => !!email)
-        .map((email) => (
-          <div
-            className="grid grid-cols-subgrid col-span-2"
-            key={email}
-          >
-            <h3>
-              <EmailOutlined />
-            </h3>
-            <a
-              target="_blank"
-              className="truncate block w-full"
-              href={'mailto:' + email}
+        .map((email: string | undefined) =>
+          email !== undefined ? (
+            <div
+              className="grid grid-cols-subgrid col-span-2"
+              key={email}
             >
-              {email}
-            </a>
-          </div>
-        ))}
+              <h3>
+                <EmailOutlined />
+              </h3>
+              <a
+                target="_blank"
+                className="truncate block w-full"
+                href={'mailto:' + email}
+              >
+                {email}
+              </a>
+            </div>
+          ) : null
+        )}
       {!!user.externalLinks &&
         user.externalLinks.map((link) => (
           <div

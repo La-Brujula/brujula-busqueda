@@ -8,7 +8,12 @@ export function isValidImageType(file: File): Promise<boolean> {
   return new Promise((resolve) => {
     let fileReader = new FileReader();
     fileReader.onloadend = (event: ProgressEvent<FileReader>) => {
-      if (typeof event.target.result === 'string') return;
+      if (
+        event.target === null ||
+        event.target.result === null ||
+        typeof event.target.result === 'string'
+      )
+        return;
       const byteArray = new Uint8Array(event.target.result);
 
       // Checking if it's JPEG. For JPEG we need to check the first 2 bytes.
@@ -38,9 +43,10 @@ export function isValidImageType(file: File): Promise<boolean> {
 }
 
 export async function getImageURI(file: File): Promise<string> {
-  return new Promise((res) => {
+  return new Promise((res, rej) => {
     const reader = new FileReader();
     reader.onload = function (ev) {
+      if (ev.target === null) return rej('No result');
       res(ev.target.result as string);
     };
     reader.readAsDataURL(file);

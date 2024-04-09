@@ -1,17 +1,11 @@
 import { lang, proficiency } from '@/shared/types/languages';
-import { ArrowBackIos, DeleteOutline } from '@mui/icons-material';
+import { DeleteOutline } from '@mui/icons-material';
 import CloseOutlined from '@mui/icons-material/CloseOutlined';
 import { Tooltip } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import { ButtonSelect } from '@shared/components/buttonSelect';
 import languages from '@shared/constants/languages.json';
 import { ChangeEvent, useEffect, useReducer } from 'react';
-import {
-  FieldValues,
-  Path,
-  SetFieldValue,
-  UseFormRegister,
-} from 'react-hook-form';
+import { FieldValues, Path, SetFieldValue } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
 interface language {
@@ -74,6 +68,8 @@ function reducer(state: language[], action: ReducerAction): language[] {
     case 'rebase':
       if (action.state === undefined) return [];
       return action.state;
+    default:
+      return state;
   }
 }
 

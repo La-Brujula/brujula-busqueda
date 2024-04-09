@@ -20,12 +20,14 @@ export const CurrentUserBadge = () => {
         <ErrorMessage message={(error || 'Could not find user').toString()} />
       }
     >
-      <Link
-        to="/profile/$userId"
-        params={{ userId: user?.id }}
-      >
-        <ProfileBadge user={user} />
-      </Link>
+      {user !== undefined && (
+        <Link
+          to="/profile/$userId"
+          params={{ userId: user.id || '' }}
+        >
+          <ProfileBadge user={user} />
+        </Link>
+      )}
     </DataSuspense>
   );
 };
