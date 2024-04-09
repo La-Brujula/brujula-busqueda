@@ -18,8 +18,6 @@ export const ProfileHeader = ({ user }: { user: IBackendProfile }) => {
     [account, user.primaryEmail]
   );
 
-  throw Error('probando');
-
   const activities = useMemo(
     () =>
       [user.primaryActivity, user.secondaryActivity, user.thirdActivity].map(
